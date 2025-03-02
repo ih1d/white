@@ -1,0 +1,4 @@
+* The (mini) RAISE Development Method (RDM)
+Subset of the RAISE Specification Language (RSL)
+
+
