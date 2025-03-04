@@ -6,7 +6,7 @@
 ;; main scanner function
 (define scanner
   (lambda (code)
-    (lexer-b code 0 0)))
+    (scanner-b code 0 0)))
 
 ;; helper function for scanner
 (define scanner-b
@@ -31,7 +31,7 @@
       (if (char=? #\> (second code))
 	  (cons (token (list (car code) (second code)) 'partial-arrow row (+ col 2))
 		(scanner-b (cdr (cdr code)) row (+ col 2)))
-	  (report scanner ">" row col)))
+	  (report scanner "~" row col)))
      ((char-upper-case? (car code))
       (let ((type&rst (scan-type code row col)))
 	(cons (car type&rst)
@@ -50,7 +50,7 @@
   (lambda (code row col)
     (let ((num (take-while char-numeric? code))
 	  (rst (drop-while char-numeric? code)))
-      (cons (token num 'number row (+ col (length num)))
+      (list (token num 'number row (+ col (length num)))
 	    rst))))
 
 ;; helper to scan min, lambda or arrow
@@ -79,7 +79,7 @@
 ;; 4 tuple: (lexeme, cat, row-number, col-number)
 (define token
   (lambda (lex cat row col)
-    '(lex cat row col)))
+    (list lex cat row col)))
 
 ;; get lexeme from token
 (define token->lex
