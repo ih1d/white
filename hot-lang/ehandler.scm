@@ -3,10 +3,10 @@
 ;; Licensed under GPLv2
 
 ;; error report for scanning/lexing
-(define scanner-report
-  (lambda (message row col)
-    (error 'scanner
-	   (string-append msg ", at line: "
+(define report
+  (lambda (func msg row col)
+    (error func
+	   (string-append msg "found at line: "
 			  (number->string row)
 			  ", column: "
 			  (number->string col)))))
