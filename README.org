@@ -1,2 +1,2 @@
-* Homotopy Language
+* A Language that is not defined yet
 
