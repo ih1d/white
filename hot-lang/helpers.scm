@@ -36,6 +36,6 @@
      (else (drop (- n 1) (cdr lat))))))
 
 ;; not whitespace predicate function
-(define not-whitepspace
+(define not-whitespace
   (lambda (char)
-    (not (char-whitespace=? char))))
+    (not (char-whitespace? char))))

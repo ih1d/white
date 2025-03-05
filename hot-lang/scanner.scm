@@ -15,6 +15,12 @@
      ((null? code) '())
      ((char=? #\newline (car code)) (scanner-b (cdr code) (+ row 1) col))
      ((char=? #\space (car code)) (scanner-b (cdr code) row (+ col 1)))
+     ((and (char-lower-case? (car code)) (eq? #\a (car code)))
+      (let ((id&rst (scan-axiom-keyword code row col)))
+	(cons (car id&rst)
+	      (scanner-b (second id&rst)
+			 (token->row (car id&rst))
+			 (+ 1 (token->row (car id&rst)))))))
      ((char=? #\+ (car code))
       (cons (token (car code) 'plus row (+ col 1))
 	    (scanner-b (cdr code) row (+ col 1))))
@@ -44,6 +50,21 @@
 	      (scanner-b (second num&rst)
 			 (token->row (car num&rst))
 			 (+ 1 (token->col (car num&rst))))))))))
+
+;; helper to scan keyword or identifier
+(define scan-keyword-or-ident
+  (lambda (code row col)
+    (let ((word-lst (take-while not-whitespace code))
+	  (let ((word (string->list word-lst)))
+	    (cond
+	     ((string=? word "axiom")
+	      (token "axiom" 'axiom row (+ col 5)))
+	     ((string=? word "type")
+	      (token "type" 'type row (+ col 4)))
+	     ((string=? word "if")
+	      (token "if" 'if row (+ col 2)))
+	     ((string=? word "then")
+	      (token "then" 'then row (+ col 4)))))))))	       
 
 ;; helper to scan number and make token
 (define scan-number
