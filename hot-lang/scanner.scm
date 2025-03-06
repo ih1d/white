@@ -24,8 +24,8 @@
 			      code)))
 	(let ((tok (scan-keyword-or-ident word row col)))
 	  (cons tok
-		(scanner-b rst (token->row tok) (token->col tok))))))
-     ((char=? #\: (car code))
+		(scanner-b rst (token-row tok) (token-col tok)))))))))
+#|     ((char=? #\: (car code))
       (if (not (char-whitespace? (second code)))
 	  (report scanner (char->name (second code)) row col)
 	  (cons (token (car code) 'colon row (+ col 1))
@@ -59,33 +59,34 @@
 	      (scanner-b (second num&rst)
 			 (token->row (car num&rst))
 			 (+ 1 (token->col (car num&rst))))))))))
-
+     |#
+     
 ;; helper to scan keyword or identifier
 (define scan-keyword-or-ident
   (lambda (word-lst row col)
     (let ((word (list->string word-lst)))
 	(cond
 	 ((string=? word "type")
-	  (token "type" 'type row (+ col 4)))
+	  (make-token "type" 'type row (+ col 4)))
 	 ((string=? word "if")
-	  (token "if" 'if row (+ col 2)))
+	  (make-token "if" 'if row (+ col 2)))
 	 ((string=? word "then")
-	  (token "then" 'then row (+ col 4)))
+	  (make-token "then" 'then row (+ col 4)))
 	 ((string=? word "else")
-	  (token "else" 'else row (+ col 4)))
+	  (make-token "else" 'else row (+ col 4)))
 	 ((string=? word "true")
-	  (token "true" 'true row (+ col 4)))
+	  (make-token "true" 'true row (+ col 4)))
 	 ((string=? word "false")
-	  (token "false" 'false row (+ col 5)))
+	  (make-token "false" 'false row (+ col 5)))
 	 (else
-	  (token word 'id row (+ col (string-length word))))))))
+	  (make-token word 'id row (+ col (string-length word))))))))
 
 ;; helper to scan number and make token
 (define scan-number
   (lambda (code row col)
     (let ((num (take-while char-numeric? code))
 	  (rst (drop-while char-numeric? code)))
-      (list (token num 'number row (+ col (length num)))
+      (list (make-token num 'number row (+ col (length num)))
 	    rst))))
 
 ;; helper to scan min, lambda or arrow
@@ -99,7 +100,7 @@
       (list (token (list (car code) (second code)) 'lambda row (+ col 2))
 	    (cdr (cdr code))))
      (else
-      (list (token (car code) 'minus row (+ col 1))
+      (list (make-token (car code) 'minus row (+ col 1))
 	    (cdr code))))))
 
 ;; helper to scan types
@@ -107,31 +108,9 @@
   (lambda (code row col)
     (let ((type (take-while char-alphanumeric? code))
 	  (rst (drop-while char-alphanumeric? code)))
-      (list (token type 'type row (+ col (length type)))
+      (list (make-token type 'type row (+ col (length type)))
 	    rst))))
 
 ;; main struct of token
-;; 4 tuple: (lexeme, cat, row-number, col-number)
-(define token
-  (lambda (lex cat row col)
-    (list lex cat row col)))
-
-;; get lexeme from token
-(define token->lex
-  (lambda (tok)
-    (car tok)))
-
-;; get category from token
-(define token->cat
-  (lambda (tok)
-    (second tok)))
-
-;; get row from token
-(define token->row
-  (lambda (tok)
-    (third tok)))
-
-;; get column from token
-(define token->col
-  (lambda (tok)
-    (fourth tok)))
+;; 4 tuple: (lexeme, category, row-number, col-number)
+(define-structure token lex cat row col)

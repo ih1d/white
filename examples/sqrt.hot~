@@ -1,0 +1,2 @@
+sqrt : Real ~> Real
+sqrt y is x * x | x in Real
