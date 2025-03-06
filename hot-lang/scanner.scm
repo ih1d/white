@@ -13,14 +13,14 @@
   (lambda (code row col)
     (cond
      ((null? code) '())
-     ((char=? #\newline (car code)) (scanner-b (cdr code) (+ row 1) col))
+     ((char=? #\newline (car code)) (scanner-b (cdr code) (+ row 1) 0))
      ((char=? #\space (car code)) (scanner-b (cdr code) row (+ col 1)))
-     ((and (char-lower-case? (car code)) (eq? #\a (car code)))
-      (let ((id&rst (scan-axiom-keyword code row col)))
-	(cons (car id&rst)
-	      (scanner-b (second id&rst)
-			 (token->row (car id&rst))
-			 (+ 1 (token->row (car id&rst)))))))
+     ((char-lower-case? (car code))
+      (let ((word (take-while not-whitespace code))
+	    (rst (drop-while not-whitespace code)))
+	(let ((tok (scan-keyword-or-ident word row col)))
+	  (cons tok
+		(scanner-b rst (token->row tok) (token->col tok))))))
      ((char=? #\+ (car code))
       (cons (token (car code) 'plus row (+ col 1))
 	    (scanner-b (cdr code) row (+ col 1))))
@@ -53,18 +53,29 @@
 
 ;; helper to scan keyword or identifier
 (define scan-keyword-or-ident
-  (lambda (code row col)
-    (let ((word-lst (take-while not-whitespace code))
-	  (let ((word (string->list word-lst)))
-	    (cond
-	     ((string=? word "axiom")
-	      (token "axiom" 'axiom row (+ col 5)))
-	     ((string=? word "type")
-	      (token "type" 'type row (+ col 4)))
-	     ((string=? word "if")
-	      (token "if" 'if row (+ col 2)))
-	     ((string=? word "then")
-	      (token "then" 'then row (+ col 4)))))))))	       
+  (lambda (word-lst row col)
+    (let ((word (list->string word-lst)))
+	(cond
+	 ((string=? word "type")
+	  (token "type" 'type row (+ col 4)))
+	 ((string=? word "if")
+	  (token "if" 'if row (+ col 2)))
+	 ((string=? word "then")
+	  (token "then" 'then row (+ col 4)))
+	 ((string=? word "else")
+	  (token "else" 'else row (+ col 4)))
+	 ((string=? word "is")
+	  (token "is" 'is row (+ col 2)))
+	 ((string=? word "pre")
+	  (token "pre" 'pre row (+ col 3)))
+	 ((string=? word "post")
+	  (token "post" 'post row (+ col 4)))
+	 ((string=? word "true")
+	  (token "true" 'true row (+ col 4)))
+	 ((string=? word "false")
+	  (token "false" 'false row (+ col 5)))
+	 (else
+	  (token word 'id row (+ col (string-length word))))))))
 
 ;; helper to scan number and make token
 (define scan-number
