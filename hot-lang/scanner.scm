@@ -35,7 +35,7 @@
 	      (scanner-b (cdr (cdr code)) row (+ col 1))))
        ((char=? #\< (second code))
 	(cons (make-token (list (car code) (second code)) 'product row (+ col 2))
-	      (scanner-b (cdr (cdr code)) (row (+ col 2)))))
+	      (scanner-b (cdr (cdr code)) row (+ col 2))))
        (else
 	(report scanner (char->name (car code))))))
      ((char=? #\: (car code))
