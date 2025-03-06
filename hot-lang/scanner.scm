@@ -25,6 +25,12 @@
 	(let ((tok (scan-keyword-or-ident word row col)))
 	  (cons tok
 		(scanner-b rst (token-row tok) (token-col tok))))))
+     ((char=? #\< (car code))
+      (if (char=? (second code) #\=)
+	  (cons (make-token (list (car code) (second code)) 'less-equal row (+ col 2))
+		(scanner-b (cdr (cdr code)) row (+ col 2)))
+	  (cons (make-token (car code) 'less row (+ col 1))
+		(scanner-b (cdr (cdr code)) row (+ col 1)))))
      ((char=? #\> (car code))
       (cond
        ((char-whitespace? (second code))
@@ -90,6 +96,10 @@
 	  (make-token "true" 'true row (+ col 4)))
 	 ((string=? word "false")
 	  (make-token "false" 'false row (+ col 5)))
+	 ((string=? word "and")
+	  (make-token "and" 'and row (+ col 3)))
+	 ((string=? word "or")
+	  (make-token "or" 'or row (+ col 2)))
 	 (else
 	  (make-token word 'id row (+ col (string-length word))))))))
 
