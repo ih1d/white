@@ -6,7 +6,7 @@
 (define report
   (lambda (func msg row col)
     (error func
-	   (string-append msg "found at line: "
+	   (string-append msg " found at line: "
 			  (number->string row)
 			  ", column: "
 			  (number->string col)))))

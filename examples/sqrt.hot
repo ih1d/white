@@ -1,0 +1,2 @@
+sqrt : Real ~> Real
+sqrt y = x * x | x in Real /\ x >= 0
