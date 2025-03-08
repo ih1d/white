@@ -1,5 +1,3 @@
 #+AUTHOR: Isaac H. Lopez Diaz
-#+TITLE: RAISE Specification Language Interpreter
-
-* RAISE Specification Language
+#+TITLE: RAISE Specification Language
 
