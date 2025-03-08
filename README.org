@@ -1,2 +1,5 @@
-* A Language that is not defined yet
+#+AUTHOR: Isaac H. Lopez Diaz
+#+TITLE: RAISE Specification Language Interpreter
+
+* RAISE Specification Language
 
