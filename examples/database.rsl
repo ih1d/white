@@ -1,0 +1,10 @@
+DATABASE =
+    class
+        type
+	    Person,
+	    Database = Person-set
+	value
+	    check : Person >< Database -> Bool
+	axiom
+	    forall p : Person, db : Database :- check(p,db) is p in db
+    end
