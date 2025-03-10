@@ -34,6 +34,11 @@
      ((char=? #\# (car code))
       (cons (make-token "#" 'pound row (+ col 1))
 	    (scanner-b (cdr code) row (+ col 1))))
+     ((char=? #\. (car code))
+      (if (char=? #\> (second code))
+	  (cons (make-token ".>" 'rtribracket row (+ col 2))
+		(scanner-b (cdr (cdr code)) row (+ col 2)))
+	  (report scanner "." row col)))
      ((char=? #\\ (car code))
       (if (char=? #\/ (second code))
 	  (cons (make-token "\\/" 'or row (+ col 2))
@@ -86,7 +91,7 @@
 	  (cons tok
 		(scanner-b rst (token-row tok) (token-col tok))))))
      ((char=? #\< (car code))
-      (let ((tok&rst (scan-less (cdr code))))
+      (let ((tok&rst (scan-less (cdr code) row col)))
 	(let ((tok (car tok&rst))
 	      (rst (second tok&rst)))
 	  (cons tok
@@ -267,8 +272,17 @@
   (lambda (code row col)
     (let ((num (take-while char-numeric? code))
 	  (rst (drop-while char-numeric? code)))
-      (list (make-token num 'number row (+ col (length num)))
-	    rst))))
+      (if (and (char=? #\. (car rst))
+	       (char-numeric? (second rst)))
+	  (let ((dec (take-while char-numeric? (cdr rst)))
+		(decrst (drop-while char-numeric? (cdr rst))))
+	    (list (make-token (list->string (append num dec))
+			      'number
+			      row
+			      (+ col (length (append num dec))))
+		  decrst))
+	  (list (make-token num 'number row (+ col (length num)))
+		rst)))))
 
 ;; helper to scan min, lambda or arrow
 (define scan-min

@@ -1,4 +1,4 @@
-ELECTION_DATABASE =
+ELECTIONDATABASE =
     extend DATABASE with
         class
 	    value number : Database -> Nat
