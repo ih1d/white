@@ -12,7 +12,8 @@
 \usepackage{graphicx}
 
 % Document info
-\title{Implementation of RAISE Specification Language (RSL)}
+\title{Implementation of the \\
+  RAISE Specification Language (RSL)}
 \author{Isaac H. Lopez Diaz\inst{1}}
 \institute
 {
@@ -49,7 +50,7 @@ University of Puerto Rico at Rio Piedras
 
 % FRAME 2 %
 \begin{frame}
-\frametitle{Implementing an Interpreter}
+\frametitle{Implementing a Type Checker}
 \begin{figure}
 \begin{tikzpicture}
 \node (la) at (4,0) [draw, rectangle] {Lexical Analysis};
@@ -75,15 +76,6 @@ University of Puerto Rico at Rio Piedras
 \end{frame}
 
 \begin{frame}
-\frametitle{Where I am at}
-\begin{itemize}
-    \item Completed Lexical Analysis (Scanning)
-    \item Starting Syntax Analysis (Parsing)
-    \item Studying Topology and Homotopy Type Theory \cite{hott}
-\end{itemize}
-\end{frame}
-
-\begin{frame}
 \frametitle{Experience with Lexical Analysis}
 \begin{figure} 
 	\begin{tikzpicture}
@@ -105,6 +97,7 @@ University of Puerto Rico at Rio Piedras
     \caption{Finite State for keywords \textit{is} and \textit{in}}
 \end{figure}
 \end{frame}
+
 \begin{frame}
 \frametitle{Scheme}
 \begin{figure}
@@ -131,11 +124,28 @@ University of Puerto Rico at Rio Piedras
 ))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
 \end{frame}
 
+
 \begin{frame}
-\frametitle{Where I want to go}
+\frametitle{Where I am at}
+\begin{itemize}
+    \item Completed Lexical Analysis (Scanning)
+    \item Starting Syntax Analysis (Parsing)
+    \item Studying Topology and Homotopy Type Theory \cite{hott}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What I've learned from Homotopy Type Theory}
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.05]{socrates.jpg}
+    \caption{Socrates}
+    \label{fig:enter-label}
+\end{figure}
     \begin{itemize}
-        \item Finish parser
-        \item Decide what I want to evaluate (interpret)
+    \item Nothing
+    \item Types are paths, not objects
+      \item \( (A = B) \cong (A \cong B) \)
     \end{itemize}
 \end{frame}
 
