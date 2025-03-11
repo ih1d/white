@@ -10,33 +10,39 @@
     (cons (make-Tuple v rst)
 	  '())))
 
+;; If fail make return empty list
 (define fail
   (lambda (inp)
     '()))
 
+;; Given a predicate, if it matches on the car of the input
+;; then succeed else fail
 (define satisfy
-  (lambda (p l)
-    (cond
-     ((null? l)
-      (fail '()))
-     ((p (car l))
-      (succeed (car l)
-	       (cdr l)))
-     (else
-      (fail (cdr l))))))
+  (lambda (p)
+    (lambda (inp)
+      (cond
+       ((null? inp)
+	(fail '()))
+       ((p (car inp))
+	(succeed (car inp)
+		 (cdr inp)))
+       (else
+	(fail (cdr inp)))))))
 
+;; Given a char, see if matches on the car of the stream
 (define literal
   (lambda (x)
-    (lambda (inp)
-      (satisfy (lambda (i) (char=? x i))
-	       inp))))
+    (satisfy
+     (lambda (i) (char=? x i)))))
 
+;; Given two combinators run both and match whichever succeeds
 (define alt
   (lambda (p1 p2)
     (lambda (inp)
       (append (p1 inp)
 	      (p2 inp)))))
 
+;; Sequence two combinators
 (define then
   (lambda (p1 p2)
     (lambda (inp)
@@ -55,5 +61,3 @@
 	(list
 	 (make-Tuple (f (Tuple-fst t))
 		     (Tuple-snd)))))))
-
-
