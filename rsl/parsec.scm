@@ -41,7 +41,8 @@
     (lambda (inp)
       (let ((t1 (car (p1 inp))))
 	(let ((t2 (car (p2 (Tuple-snd t1)))))
-	  (make-Tuple
-	   (make-Tuple (Tuple-fst t1)
-		       (Tuple-fst t2))
-	   (Tuple-snd t2)))))))
+	  (list
+	   (make-tuple
+	    (make-Tuple (Tuple-fst t1)
+		        (Tuple-fst t2))
+	   (Tuple-snd t2))))))))
