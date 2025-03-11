@@ -6,8 +6,8 @@
 
 ;; If succeeds make a tuple
 (define succeed
-  (lambda (v inp)
-    (cons (make-Tuple v inp)
+  (lambda (v rst)
+    (cons (make-Tuple v rst)
 	  '())))
 
 (define fail
@@ -15,20 +15,21 @@
     '()))
 
 (define satisfy
-  (lambda (p)
-    (lambda (l)
-      (cond
-       ((null? l)
-	(fail '()))
-       ((p (car l))
-	(succeed (car l)
-		 (cdr l)))
-       (else
-	(fail (cdr l)))))))
+  (lambda (p l)
+    (cond
+     ((null? l)
+      (fail '()))
+     ((p (car l))
+      (succeed (car l)
+	       (cdr l)))
+     (else
+      (fail (cdr l))))))
 
 (define literal
   (lambda (x)
-    (satisfy (lambda (i) (char=? i x)))))
+    (lambda (inp)
+      (satisfy (lambda (i) (char=? x i))
+	       inp))))
 
 (define alt
   (lambda (p1 p2)
@@ -42,7 +43,17 @@
       (let ((t1 (car (p1 inp))))
 	(let ((t2 (car (p2 (Tuple-snd t1)))))
 	  (list
-	   (make-tuple
+	   (make-Tuple
 	    (make-Tuple (Tuple-fst t1)
-		        (Tuple-fst t2))
-	   (Tuple-snd t2))))))))
+			(Tuple-fst t2))
+	    (Tuple-snd t2))))))))
+
+(define using
+  (lambda (p f)
+    (lambda (inp)
+      (let ((t (car (p inp))))
+	(list
+	 (make-Tuple (f (Tuple-fst t))
+		     (Tuple-snd)))))))
+
+
