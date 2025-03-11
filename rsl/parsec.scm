@@ -4,6 +4,7 @@
 ;; Tuple structure
 (define-structure Tuple fst snd)
 
+;; If succeeds make a tuple
 (define succeed
   (lambda (v inp)
     (cons (make-Tuple v inp)
@@ -39,4 +40,8 @@
   (lambda (p1 p2)
     (lambda (inp)
       (let ((t1 (car (p1 inp))))
-	(p2 (Tuple-snd t1))))))
+	(let ((t2 (car (p2 (Tuple-snd t1)))))
+	  (make-Tuple
+	   (make-Tuple (Tuple-fst t1)
+		       (Tuple-fst t2))
+	   (Tuple-snd t2)))))))
