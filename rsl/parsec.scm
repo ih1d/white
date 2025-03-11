@@ -54,10 +54,12 @@
 			(Tuple-fst t2))
 	    (Tuple-snd t2))))))))
 
+;; Transform the parsed value
 (define using
   (lambda (p f)
     (lambda (inp)
       (let ((t (car (p inp))))
 	(list
 	 (make-Tuple (f (Tuple-fst t))
-		     (Tuple-snd)))))))
+		     (Tuple-snd t)))))))
+
