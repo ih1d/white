@@ -6,9 +6,10 @@
 
 ;; If succeeds make a tuple
 (define succeed
-  (lambda (v rst)
-    (cons (make-Tuple v rst)
-	  '())))
+  (lambda (v)
+    (lambda (inp)
+      (cons (make-Tuple v (cdr inp))
+	    '()))))
 
 ;; If fail make return empty list
 (define fail
@@ -24,8 +25,7 @@
        ((null? inp)
 	(fail '()))
        ((p (car inp))
-	(succeed (car inp)
-		 (cdr inp)))
+	(succeed (car inp)))
        (else
 	(fail (cdr inp)))))))
 
@@ -63,3 +63,11 @@
 	 (make-Tuple (f (Tuple-fst t))
 		     (Tuple-snd t)))))))
 
+
+(define string
+  (lambda (inp)
+    (if (null? inp)
+	(succeed '())
+	(using (then (literal (car inp))
+		     (string (cdr inp)))
+	       cons))))
