@@ -64,6 +64,12 @@
 		     (Tuple-snd t)))))))
 
 
+(define many
+  (lambda (p)
+    (alt (using (then p (many p))
+		cons)
+	 (succeed '() '()))))
+
 (define string
   (lambda (inp)
     (if (null? inp)
