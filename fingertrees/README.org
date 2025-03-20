@@ -3,6 +3,4 @@
 #+bibliography: refs.bib
 
 Implementation of finger trees from:
-
-
 [cite:@hinze2006finger]
