@@ -2,4 +2,4 @@
 #+TITLE: Finger trees
 #+bibliography: refs.bib
 
-[cite:@hinze2006finger]
+Implementation of finger trees data structure [cite:@hinze2006finger].
