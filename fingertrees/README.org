@@ -1,5 +1,0 @@
-#+AUTHOR: Isaac H. Lopez Diaz <isaac.lopez@upr.edu>
-#+TITLE: Finger trees
-#+bibliography: refs.bib
-
-Implementation of finger trees data structure [cite:@hinze2006finger].
