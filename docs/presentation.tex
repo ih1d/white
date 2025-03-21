@@ -29,7 +29,7 @@ University of Puerto Rico at Rio Piedras
 \begin{frame}
 \frametitle{What is RSL?}
 \begin{itemize}
-\item RAISE stands for ``Rigorous Approach to Industrial Software Engineering''. \cite{rsl}
+\item RAISE stands for ``Rigorous Approach to Industrial Software Engineering''.
 \item It is a formal method specification language
 \item If the specification is correct the code \sout{must be} is likely correct
 \end{itemize}
@@ -43,6 +43,12 @@ University of Puerto Rico at Rio Piedras
   
 \end{frame}
 
+% FRAME 3 %
+\begin{frame}
+  \frametitle{What is model checking?}
+\end{frame}
+
+
 %% TIKZ func %% 
 \tikzset{
 	->,  % makes the edges directed
@@ -53,7 +59,7 @@ University of Puerto Rico at Rio Piedras
 	initial text=$ $, % sets the text that appears on the start arrow
  }
 
-% FRAME 3 %
+% FRAME 4 %
 \begin{frame}
 \frametitle{Implementing a Interpreter \sout{Model Checker}}
 \begin{figure}
@@ -76,23 +82,44 @@ University of Puerto Rico at Rio Piedras
 \draw [->] (ev.north) -- (env.south);
 \draw [->] (ev.north) -- (err.south);
 \end{tikzpicture}
-\caption{Interpreter phases \cite{dragonbook}}
+\caption{Interpreter phases}
 \end{figure}
-\end{frame}
-
-% FRAME 4 %
-\begin{frame}
-  \frametitle{How to implement?}
 \end{frame}
 
 % FRAME 5 %
 \begin{frame}
+  \frametitle{How to implement?}
+  \begin{itemize}
+  \item Using functional programming
+  \item Standard lexing and parsing techniques
+  \item Semantic analysis and type checker most difficult
+  \item ... actually model checking
+  \item Demo at end of presentation
+  \end{itemize}
+\end{frame}
+
+% FRAME 6 %
+\begin{frame}
   \frametitle{Why Lisp?}
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.45]{lisp.png}
+    \caption{Lisp mascot}
+    \label{fig:enter-label}
+  \end{figure}
+  
+  \begin{itemize}
+  \item (Easy to represent expressions)
+  \item (Easy to alter state '(unlike Haskell))
+  \item (Easy to do symbolic computation)
+  \item (Programming in Lisp is fun!)
+  \end{itemize}
 \end{frame}
 
 % REFERENCES
 \begin{frame}[allowframebreaks]
-\frametitle{References}
+  \frametitle{References}
+\nocite*
 \bibliographystyle{acm}
 \bibliography{refs}
 \end{frame}
