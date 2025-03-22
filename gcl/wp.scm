@@ -9,14 +9,16 @@
     (cond
      ((null? S) '())
      ((eq? (car S) 'skip)
-      (reduction R))
+      (rdce R))
      ((eq? (car S) 'abort)
       #f)
      ((eq? (car S) 'assignment)
       (let ((v (lookup (second S) R)))
 	(if v
-	    (substitute v (third S) R)
+	    (rdce (substitute v (third S) R))
 	    (error (second S) "variable does not exist."))))
+     ((eq? (car S) 'seq)
+      (wp (cadr S) (wp (caddr S) R)))
      (else
       (error (car S) "not defined")))))
 
@@ -46,17 +48,31 @@
       (cons (car R)
 	    (substitute v e (cdr R)))))))
 
-#;(define (simplify expr)
-  (cond
-    ((and (pair? expr) (eq? (car expr) '>))
-     (let* ((lhs (cadr expr))  ;; (- x 5)
-            (rhs (caddr expr))) ;; 10
-       (if (and (pair? lhs) (eq? (car lhs) '-))
-           ;; If LHS is (- x c), rearrange to x > (rhs + c)
-           (let ((var (cadr lhs))
-                 (const (caddr lhs)))
-             `(> ,var ,(+ rhs const)))
-           expr)))  ;; Otherwise, return as is
-
-    ;; Base case: return unchanged
-    (else expr)))
+(define rdce
+  (lambda (expr)
+    (if (and (pair? expr)
+	     (member (car expr) '(> < >= <= =)))
+	(let* ((op (car expr))
+	       (lhs (cadr expr))
+	       (rhs (caddr expr)))
+	  (cond
+	   ((and (pair? lhs)
+		 (eq? (car lhs) '-))
+	    (let ((var (cadr lhs))
+		  (const (caddr lhs)))
+	      `(,op ,var ,(+ rhs const))))
+	   
+	   ((and (pair? lhs)
+		 (eq? (car lhs) '+))
+	    (let ((var (cadr lhs))
+		  (const (caddr lhs)))
+	      `(,op ,var ,(- rhs const))))
+	   
+	   ((and (pair? lhs)
+		 (eq? (car lhs) '*))
+	    (let ((coeff (cadr lhs))
+		  (var (caddr lhs)))
+	      (if (not (= coeff 0))
+		  `(,op ,var ,(/ rhs coeff))
+		  'error)))))
+	expr)))

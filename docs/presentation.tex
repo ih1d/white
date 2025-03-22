@@ -116,6 +116,19 @@ University of Puerto Rico at Rio Piedras
   \end{itemize}
 \end{frame}
 
+% FRAME 7 %
+\begin{frame}
+  \frametitle{Example: Weakest Precondition (or Predicate Calculus)}
+  Given some statement \textit{S} and a \textbf{postcondition} \textit{R},
+  the \textbf{weakest precondition} is a predicate \textit{Q} such that for
+  any \textbf{precondition} \textit{P} \( \{P\} S \{R\} \Longleftrightarrow P \Rightarrow Q \)
+  \begin{itemize}
+  \item \(wp(\textbf{skip}, R) = R\)
+  \item \(wp(\textbf{abort}, R) = False\)
+  \item \(wp(\textbf{x := E}, R) = R[x \leftarrow E] \)    
+  \end{itemize}
+\end{frame}
+
 % REFERENCES
 \begin{frame}[allowframebreaks]
   \frametitle{References}
