@@ -9,13 +9,13 @@
     (cond
      ((null? S) '())
      ((eq? (car S) 'skip)
-      (rdce R))
+      (reduce R))
      ((eq? (car S) 'abort)
       #f)
      ((eq? (car S) 'assignment)
       (let ((v (lookup (second S) R)))
 	(if v
-	    (rdce (substitute v (third S) R))
+	    (reduce (substitute v (third S) R))
 	    (error (second S) "variable does not exist."))))
      ((eq? (car S) 'seq)
       (wp (cadr S) (wp (caddr S) R)))
@@ -47,32 +47,29 @@
      (else
       (cons (car R)
 	    (substitute v e (cdr R)))))))
+(define rev
+  (lambda (op)
+    (cond
+     ((eq? op '+) -)
+     ((eq? op '-) +)
+     (else
+      (error op "not defined")))))
 
-(define rdce
+(define reduce
   (lambda (expr)
-    (if (and (pair? expr)
-	     (member (car expr) '(> < >= <= =)))
-	(let* ((op (car expr))
-	       (lhs (cadr expr))
-	       (rhs (caddr expr)))
+    (if (null? expr)
+	(error expr "is empty")
+	(let* ((rel (car expr))
+	      (lhs (cadr expr))
+	      (rhs (caddr expr)))
 	  (cond
-	   ((and (pair? lhs)
-		 (eq? (car lhs) '-))
-	    (let ((var (cadr lhs))
-		  (const (caddr lhs)))
-	      `(,op ,var ,(+ rhs const))))
-	   
-	   ((and (pair? lhs)
-		 (eq? (car lhs) '+))
-	    (let ((var (cadr lhs))
-		  (const (caddr lhs)))
-	      `(,op ,var ,(- rhs const))))
-	   
-	   ((and (pair? lhs)
-		 (eq? (car lhs) '*))
-	    (let ((coeff (cadr lhs))
-		  (var (caddr lhs)))
-	      (if (not (= coeff 0))
-		  `(,op ,var ,(/ rhs coeff))
-		  'error)))))
-	expr)))
+	   ((list? lhs)
+	    (let ((op (car lhs))
+		  (nlhs (cadr lhs))
+		  (nrhs (caddr lhs)))
+	      (if (symbol? nlhs)
+		  `(,rel ,nlhs ,(apply (rev op) (list rhs nrhs)))
+		  `(,rel ,(apply (rev op) (list rhs nlhs)) ,nrhs))))
+	   ((symbol? lhs)
+	    `(,rel ,lhs ,rhs))
+	   (else expr))))))
