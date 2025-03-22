@@ -27,6 +27,13 @@ University of Puerto Rico at Rio Piedras
 
 % FRAME 1 %
 \begin{frame}
+  \frametitle{What is formal methods?}
+  Think of a mathematical language/framework that can specify and verify rigourously
+  the correctness, and, not less importantly, safety, of software and/or hardware.
+\end{frame}
+
+% FRAME 1 %
+\begin{frame}
 \frametitle{What is RSL?}
 \begin{itemize}
 \item RAISE stands for ``Rigorous Approach to Industrial Software Engineering''.
@@ -36,18 +43,6 @@ University of Puerto Rico at Rio Piedras
 \[ \text{check} : \text{Person} \times \text{Database} \rightarrow \text{Bool} \]
 \[ \forall \text{p} : \text{Person}, \text{db} : \text{Database} \bullet \text{check(p, db)} \equiv \text{p} \in \text{db} \]
 \end{frame}
-
-% FRAME 2 %
-\begin{frame}
-  \frametitle{What is formal methods?}
-  
-\end{frame}
-
-% FRAME 3 %
-\begin{frame}
-  \frametitle{What is model checking?}
-\end{frame}
-
 
 %% TIKZ func %% 
 \tikzset{
@@ -59,7 +54,7 @@ University of Puerto Rico at Rio Piedras
 	initial text=$ $, % sets the text that appears on the start arrow
  }
 
-% FRAME 4 %
+% FRAME 3 %
 \begin{frame}
 \frametitle{Implementing a Interpreter \sout{Model Checker}}
 \begin{figure}
@@ -86,6 +81,17 @@ University of Puerto Rico at Rio Piedras
 \end{figure}
 \end{frame}
 
+% FRAME 4 %
+\begin{frame}
+  \frametitle{What is model checking?}
+  Consists of 3 important steps:
+  \begin{itemize}
+  \item Modeling
+  \item Specification
+  \item Verification
+  \end{itemize}
+\end{frame}
+
 % FRAME 5 %
 \begin{frame}
   \frametitle{How to implement?}
@@ -100,14 +106,14 @@ University of Puerto Rico at Rio Piedras
 
 % FRAME 6 %
 \begin{frame}
-  \frametitle{Why Lisp?}
+  \frametitle{Why Functional Programming?}
   \begin{figure}
     \centering
     \includegraphics[scale=0.45]{lisp.png}
     \caption{Lisp mascot}
     \label{fig:enter-label}
   \end{figure}
-  
+  ... and why on earth lisp?
   \begin{itemize}
   \item (Easy to represent expressions)
   \item (Easy to alter state '(unlike Haskell))
