@@ -1,6 +1,7 @@
 ;; Author: Isaac H. Lopez Diaz <isaac.lopez@upr.edu>
 ;; Description: Weakest precondition eval
 ;; Licensed under GPLv3
+(load "helpers.scm")
 
 ;; Evaluates the weakest precondition P
 ;; for statement S and postcondition R
@@ -19,6 +20,12 @@
 	    (error (second S) "variable does not exist."))))
      ((eq? (car S) 'seq)
       (wp (cadr S) (wp (caddr S) R)))
+     ((eq? (car S) 'if)
+      (let ((c (cadr S))
+	    (t (wp (caddr S) R))
+	    (e (wp (cadddr S) R)))
+	(and (implies c t)
+	     (implies (not c) e))))
      (else
       (error (car S) "not defined")))))
 
