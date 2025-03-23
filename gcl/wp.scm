@@ -47,19 +47,24 @@
      (else
       (cons (car R)
 	    (substitute v e (cdr R)))))))
+
+;; Reverse an operator
 (define rev
   (lambda (op)
     (cond
      ((eq? op '+) -)
      ((eq? op '-) +)
+     ((eq? op '/) *)
+     ((eq? op '*) /)
      (else
       (error op "not defined")))))
 
+;; Reduce an expression (simplification)
 (define reduce
   (lambda (expr)
     (if (null? expr)
 	(error expr "is empty")
-	(let* ((rel (car expr))
+	(let ((rel (car expr))
 	      (lhs (cadr expr))
 	      (rhs (caddr expr)))
 	  (cond
@@ -72,4 +77,4 @@
 		  `(,rel ,(apply (rev op) (list rhs nlhs)) ,nrhs))))
 	   ((symbol? lhs)
 	    `(,rel ,lhs ,rhs))
-	   (else expr))))))
+	   (else (eval expr user-initial-environment)))))))
