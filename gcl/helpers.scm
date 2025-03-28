@@ -27,4 +27,12 @@
       (drop-while pred (cdr lat)))
      (else lat))))
 
-      
+;; Add 1 to number n
+(define add1
+  (lambda (n)
+    (+ n 1)))
+
+;; Subtract 1 to number n
+(define sub1
+  (lambda (n)
+    (- n 1)))
