@@ -22,7 +22,7 @@
 	  (char=? #\tab (car code)))
       (scanner-b (cdr code) row (+ col 1)))
      ((char=? #\; (car code))
-      (cons (make-token ";" 'seq row (+ col 1))
+      (cons (make-token ";" 'semi row (+ col 1))
 	    (scanner-b (cdr code) row (+ col 1))))
      ((char=? #\< (car code))
       (if (char=? #\= (cadr code))
@@ -41,7 +41,7 @@
 	    (scanner-b (cdr code) row (+ col 1))))
      ((and (char=? #\: (car code))
 	   (char=? #\= (cadr code)))
-      (cons (make-token ":=" 'assignment row (+ col 2))
+      (cons (make-token ":=" 'coloneq row (+ col 2))
 	    (scanner-b (cddr code) row (+ col 2))))
      ((char=? #\= (car code))
       (cons (make-token "=" 'eq row (+ col 1))
@@ -64,17 +64,22 @@
 	  (cons tok
 		(scanner-b rst (token-row tok) (token-col tok))))))
      ((char-numeric? (car code))
-      (let ((num&rst (scan-number code row col)))
-	(cons (car num&rst)
-	      (scanner-b (second num&rst)
-			 (token-row (car num&rst))
-			 (+ 1 (token-col (car num&rst))))))))))
+      (let ((num (take-while char-numeric? code))
+	    (rst (drop-while char-numeric? code)))
+	(cons (make-token (list->string num) 'number row (+ col (length num)))
+	      (scanner-b rst row (+ col (length num)))))))))
 
 ;; helper to scan keyword or identifier
 (define scan-keyword-or-ident
   (lambda (word-lst row col)
     (let ((word (list->string word-lst)))
       (cond
+       ((string=? word "if")
+	(make-token "if" 'if row (+ col 2)))
+       ((string=? word "then")
+	(make-token "then" 'then row (+ col 4)))
+       ((string=? word "else")
+	(make-token "else" 'else row (+ col 4)))
        ((string=? word "skip")
 	(make-token "skip" 'skip row (+ col 4)))
        ((string=? word "true")
@@ -87,21 +92,3 @@
 	(make-token "do" 'do row (+ col 2)))
        (else
 	(make-token word 'id row (+ col (string-length word))))))))
-
-;; helper to scan number and make token
-(define scan-number
-  (lambda (code row col)
-    (let ((num (take-while char-numeric? code))
-	  (rst (drop-while char-numeric? code)))
-      (if (and (char=? #\. (car rst))
-	       (char-numeric? (second rst)))
-	  (let ((dec (take-while char-numeric? (cdr rst)))
-		(decrst (drop-while char-numeric? (cdr rst))))
-	    (list (make-token (list->string (append num dec))
-			      'number
-			      row
-			      (+ col (length (append num dec))))
-		  decrst))
-	  (list (make-token num 'number row (+ col (length num)))
-		rst)))))
-
