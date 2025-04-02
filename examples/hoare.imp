@@ -1,4 +1,2 @@
-r := x;
-q := 0;
-while y <= r
-do r := r - y ; q := 1 + q
+((r := x; q := 0); while
+   y <= r do (r := r - y ; q := 1 + q))

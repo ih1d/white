@@ -1,6 +1,6 @@
 ;; Author: Isaac H. Lopez Diaz <isaac.lopez@upr.edu>
 ;; Description: Weakest precondition eval
-;; Licensed under GPLv3
+;; Licensed under MIT
 (load "helpers.scm")
 
 ;; Evaluates the weakest precondition P

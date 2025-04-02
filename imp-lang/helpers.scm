@@ -1,5 +1,6 @@
 ;; Author: Isaac H. Lopez Diaz <isaac.lopez@upr.edu>
 ;; Description: Helper functions for scanning and parsing
+;; Licensed under MIT
 
 ;; take from list while predicate is true
 (define take-while

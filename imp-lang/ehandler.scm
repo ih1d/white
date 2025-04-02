@@ -1,6 +1,6 @@
 ;; Author: Isaac H. Lopez Diaz <isaac.lopez@upr.edu>
 ;; Description: Error handler module for interpreter
-;; Licensed under GPLv2
+;; Licensed under MIT
 
 ;; error report for scanning/lexing
 (define report

@@ -1,5 +1,6 @@
 ;; Author: Isaac H. Lopez Diaz <isaac.lopez@upr.edu>
-;; Descrtiption: Scanner for hot lang
+;; Descrtiption: Scanner for IMP Lang
+;; Licensed under MIT
 (load "helpers.scm")
 (load "ehandler.scm")
 
@@ -21,6 +22,12 @@
      ((or (char=? #\space (car code))
 	  (char=? #\tab (car code)))
       (scanner-b (cdr code) row (+ col 1)))
+     ((char=? #\( (car code))
+      (cons (make-token "(" 'lparen row (+ col 1))
+	    (scanner-b (cdr code) row (+ col 1))))
+     ((char=? #\) (car code))
+      (cons (make-token ")" 'rparen row (+ col 1))
+	    (scanner-b (cdr code) row (+ col 1))))
      ((char=? #\; (car code))
       (cons (make-token ";" 'semi row (+ col 1))
 	    (scanner-b (cdr code) row (+ col 1))))
