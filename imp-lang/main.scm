@@ -2,6 +2,7 @@
 ;; Description: Main module
 ;; Licensed under MIT
 (load "scanner.scm")
+(load "parser.scm")
 
 (define file->char-list
   (lambda (f)
@@ -16,4 +17,6 @@
 (define main
   (lambda (f)
     (let ((chars (file->char-list f)))
-      (map token-cat (scanner chars)))))
+      (let ((scanned (scanner chars)))
+	(let ((parsed (expression scanned)))
+	  parsed)))))

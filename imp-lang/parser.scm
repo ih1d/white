@@ -4,15 +4,5 @@
 (load "scanner.scm")
 (load "ehandler.scm")
 
-;; arithmetic expressions
-(define-structure aexp a atok)
 
-;; boolean expressions
-(define-structure bexp b btok)
-
-;; locations
-(define-structure loc X Xtok)
-
-;; commands
-(define-structure com c ctok)
-
+;; expression
