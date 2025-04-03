@@ -18,5 +18,5 @@
   (lambda (f)
     (let ((chars (file->char-list f)))
       (let ((scanned (scanner chars)))
-	(let ((parsed (expression scanned)))
+	(let ((parsed (expr scanned)))
 	  parsed)))))

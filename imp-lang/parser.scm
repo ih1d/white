@@ -4,5 +4,5 @@
 (load "scanner.scm")
 (load "ehandler.scm")
 
-
-;; expression
+(define-structure expr
+  
