@@ -35,9 +35,6 @@
     (cond
      ((null? R) #f)
      ((eq? v (car R)) v)
-     ((list? (car R))
-      (or (lookup v (car R))
-	  (lookup v (cdr R))))
      (else
       (lookup v (cdr R))))))
 
@@ -47,10 +44,8 @@
     (cond
      ((null? R) '())
      ((eq? v (car R))
-      (cons e (cdr R)))
-     ((list? (car R))
-      (cons (substitute v e (car R))
-	    (substitute v e (cdr R))))
+      (append (cdr R)
+	    (list e)))
      (else
       (cons (car R)
 	    (substitute v e (cdr R)))))))
@@ -74,7 +69,7 @@
 	(let ((rel (car expr))
 	      (lhs (cadr expr))
 	      (rhs (caddr expr)))
-	  (cond
+	  (cond	   
 	   ((list? lhs)
 	    (let ((op (car lhs))
 		  (nlhs (cadr lhs))
@@ -83,12 +78,12 @@
 		  `(,rel ,nlhs ,(apply (rev op) (list rhs nrhs)))
 		  `(,rel ,(apply (rev op) (list rhs nlhs)) ,nrhs))))
 	   ((list? rhs)
-	    (let ((op (car lhs))
-		  (nlhs (cadr lhs))
-		  (nrhs (caddr lhs)))
+	    (let ((op (car rhs))
+		  (nlhs (cadr rhs))
+		  (nrhs (caddr rhs)))
 	      (if (symbol? nrhs)
-		  '(,rel ,(apply (rev op) (list lhs nlhs)) ,nrhs)
-		  '(,rel ,nlhs ,(apply (rev op (list lhs nrhs))) ,nrhs))))
+		  `(,rel ,(apply (rev op) (list lhs nlhs)) ,nrhs)
+		  `(,rel ,nlhs ,(apply (rev op) (list lhs nrhs))))))
 	   ((symbol? lhs)
 	    `(,rel ,lhs ,rhs))
 	   (else (eval expr user-initial-environment)))))))
