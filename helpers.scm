@@ -2,6 +2,11 @@
 ;; Description: Helper functions for scanning and parsing
 ;; Licensed under MIT
 
+;; implies definitino
+(define implies
+  (lambda (p q)
+    (or (not p) q)))
+
 ;; take from list while predicate is true
 (define take-while
   (lambda (pred lat)

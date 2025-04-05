@@ -23,6 +23,20 @@
     ((_ x y)
      (set! x y))))
 
+(define-syntax seq
+  (syntax-rules ()
+    ((_ x ...)
+     (begin
+       x
+       ...))))
+
+(define-syntax when
+  (syntax-rules (then else)
+    ((_ pred (then then-expr) (else else-expr))
+     (if pred
+	 then-expr
+	 else-expr))))
+
 (define-syntax while
   (syntax-rules ()
     ((_ pred b1 ...)
@@ -31,6 +45,14 @@
 	   (begin
 	     b1 ...
 	     (loop)))))))
+
+(define-syntax true
+  (syntax-rules ()
+    ((_) #t)))
+
+(define-syntax false
+  (syntax-rules ()
+    ((_) #f)))
 
 ;; Evaluates the weakest precondition P
 ;; for statement S and postcondition R
@@ -41,20 +63,21 @@
      ((eq? (car S) 'skip)
       (reduce R))
      ((eq? (car S) 'abort)
-      #f)
-     ((eq? (car S) 'assignment)
+      (false))
+     ((or (eq? (car S) 'var)
+	  (eq? (car S) ':=))
       (let ((v (lookup (second S) R)))
 	(if v
 	    (reduce (substitute v (third S) R))
 	    (error (second S) "variable does not exist."))))
      ((eq? (car S) 'seq)
       (wp (cadr S) (wp (caddr S) R)))
-     ((eq? (car S) 'if)
+     ((eq? (car S) 'when)
       (let ((c (cadr S))
-	    (t (wp (caddr S) R))
-	    (e (wp (cadddr S) R)))
-	(and (implies c t)
-	     (implies (not c) e))))
+	    (t (wp (cadr (caddr S)) R))
+	    (e (wp (cdr (cadddr S)) R)))
+	(and (eval (implies c t) user-initial-environment)
+	     (eval (implies (not c) e)) user-initial-environment)))
      (else
       (error (car S) "not defined")))))
 
