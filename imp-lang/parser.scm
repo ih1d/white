@@ -4,5 +4,15 @@
 (load "scanner.scm")
 (load "ehandler.scm")
 
-(define-structure expr
-  
+;; arithmetic expression
+(define arith-expr
+  (lambda (tokens)
+    (cond
+     ((null? tokens) '())
+     ((eq? 'number (car tokens))
+      ;; do something
+      )
+     ((eq? 'plus (car tokens))
+      ;; do something else
+      )
+     ((eq? )))))
