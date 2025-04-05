@@ -13,17 +13,24 @@
     ((_) #f)
     ((_ x ...) #f)))
 
-(define-syntax when
-  (syntax-rules (then else)
-    ((_ pred then then-expr else else-expr)
-     (if pred
-	 then-expr
-	 else-expr))))
+(define-syntax var
+  (syntax-rules ()
+    ((_ x y)
+     (define x y))))
+
+(define-syntax :=
+  (syntax-rules ()
+    ((_ x y)
+     (set! x y))))
 
 (define-syntax while
   (syntax-rules ()
     ((_ pred b1 ...)
-     (let loop () (when pred b1 ... (loop))))))
+     (let loop ()
+       (if pred
+	   (begin
+	     b1 ...
+	     (loop)))))))
 
 ;; Evaluates the weakest precondition P
 ;; for statement S and postcondition R
