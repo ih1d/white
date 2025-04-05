@@ -3,6 +3,28 @@
 ;; Licensed under MIT
 (load "helpers.scm")
 
+(define-syntax skip
+  (syntax-rules ()
+    ((_ R)
+     R)))
+
+(define-syntax abort
+  (syntax-rules ()
+    ((_) #f)
+    ((_ x ...) #f)))
+
+(define-syntax when
+  (syntax-rules (then else)
+    ((_ pred then then-expr else else-expr)
+     (if pred
+	 then-expr
+	 else-expr))))
+
+(define-syntax while
+  (syntax-rules ()
+    ((_ pred b1 ...)
+     (let loop () (when pred b1 ... (loop))))))
+
 ;; Evaluates the weakest precondition P
 ;; for statement S and postcondition R
 (define wp
