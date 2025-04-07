@@ -11,7 +11,7 @@
 ;; Numbers
 ;; Booleans
 ;; Variables
-;; 
+;; Lambda
 ;; Binary Operations (+ - * / and or)
 (define-structure expression type expr)
 
@@ -26,6 +26,11 @@
 	 ((boolean? (car inp))
 	  (cons (make-expression 'Boolean (car inp))
 		(parser (cdr inp))))
+	 ((eq? 'lambda (car inp))
+	  (let ((types (cadr inp))
+		(vars (caddr inp)))
+	    (if (list? types)
+		(
 	 ((symbol? (car inp))
 	  (cons (make-expression 'Var (car inp))
 		(parser (cdr inp))))
