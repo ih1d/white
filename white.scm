@@ -2,6 +2,9 @@
 ;; Description: White language for reflective type checkers
 ;; Licensed under MIT
 
+;; PROCEDURES FOR ENV ;;
+(define the-empty-env '())
+
 ;; USER LEVEL 0 -> SIMPLY TYPED LAMBDA CALCULUS
 ;; META LEVEL 1 -> SYSTEM F/SYSTEM w (polymorphism)
 ;; META LEVEL 2 -> DEPENDENT TYPES
@@ -12,7 +15,7 @@
 ;; Booleans
 ;; Variables
 ;; Lambda
-;; Binary Operations (+ - * / and or)
+;; Binary Operations (+ - and or)
 (define-structure expression type expr)
 
 (define parser
@@ -30,7 +33,9 @@
 	  (let ((types (cadr inp))
 		(vars (caddr inp)))
 	    (if (list? types)
-		(
+		'()
+		(cons (make-expression 'Type types)
+		      (
 	 ((symbol? (car inp))
 	  (cons (make-expression 'Var (car inp))
 		(parser (cdr inp))))
