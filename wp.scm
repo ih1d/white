@@ -57,7 +57,7 @@
 ;; Evaluates the weakest precondition P
 ;; for statement S and postcondition R
 (define wp
-  (lambda (S R)
+  (lambda (S R env)
     (cond
      ((null? S) '())
      ((eq? (car S) 'skip)
