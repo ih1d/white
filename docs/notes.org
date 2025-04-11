@@ -1,0 +1,13 @@
+#+AUTHOR: Isaac H. Lopez Diaz
+#+TITLE: Research notes for Meta Type Checker
+
+* Overview
+** Goals
+- Implement a layered typed interpreter that can move to different type systems
+- We start in the *Simply Typed Lambda Calculus* (STLC).
+** Motivation
+- Tool to teach type systems.
+
+** Roadmap
+- Phase 1: Interpreter for STLC
+

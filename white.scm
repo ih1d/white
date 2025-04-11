@@ -10,34 +10,5 @@
 ;; environment functions
 (define the-empty-environment '())
 
-;; type checker takes an expression and returns a type
-(define (tc exp env))
-
-;; is operator
-(define (op? e)
-  (cond
-   ((eq? e '+) #t)
-   ((eq? e '*) #t)
-   ((eq? e 'and) #t)
-   ((eq? e 'or) #t)))
-
-;; binary decision
-(define (bin-decision op t1 t2)
-  (cond
-   ((eq? op '+)
-    (if (and (eq? 'Number t1)
-	     (eq? 'Number t2))
-	'Number
-	(error (list t1 t2) "type mismatch")))
-   ((eq? op '-)
-    (if (and (eq? 'Number t1)
-	     (eq? 'Number t2))
-	'Number
-	(error (list t1 t2) "type mismatch")))
-   ((eq? op 'and)
-    (if (and (eq? 'Boolean t1)
-	     (eq? 'Boolean t2))
-	'Boolean
-	(error (list t1 t2) "type mismatch")))
-   (else
-    (error op "not defined"))))
+;; expression
+(define-structure expr v t)
