@@ -1,0 +1,76 @@
+% Author: Isaac H. Lopez Diaz <isaac.lopez@upr.edu>
+% Description: Phase 3 of Project CCOM 6050
+
+\documentclass{article}
+
+\usepackage{tabularx}
+
+\title{Phase 3 \\ CCOM 6050: Design and Analysis of Algorithms}
+\author{Isaac H. Lopez Diaz}
+
+\begin{document}
+\maketitle
+
+% SECTION 1 %
+\section{Statement of the Problem}
+This report presents how a reflective language - a language able to reason about itself - can
+benefit from a type system, specifically dependent types - types that depend on their value (term).
+Most, if not all, reflective languages are extensions of some Lisp dialect, meaning that they are
+likely to be dynamically-typed, so one can argue that there is a need for a reflective language
+that incorporates a type system. One notable argument for incorporating type systems on a
+reflective language is that one can ensure semantics-preserving rewrites (safe transformations).
+
+% SECTION 2 %
+\section{Background and Methodologies}
+\subsection*{Background}
+\subsection*{Methodologies}
+
+% SECTION 3 %
+\section{Algorithms}
+\subsection*{Coquand's type-checking algorithm}
+\subsection*{Partial Evaluation}
+
+% SECTION 4 %
+\section{Complexity Analysis}
+\subsection*{Type-checking Algorithm}
+\begin{tabularx}{0.8\textwidth}{
+  | >{\raggedright\arraybackslash}X
+  | >{\centering\arraybackslash}X
+  | >{\raggedright\arraybackslash}X
+  | >{\raggedright\arraybackslash}X | }
+  \hline
+  Case & Time Complexity & Space Complexity \\
+  \hline
+  Best Case & $\Theta(1)$ & $\Theta(1)$ \\
+  \hline
+  Average Case & $\Theta(n)$ & $\Theta(n)$ \\
+  \hline
+  Worst Case & $\Theta(n^2)$ or $\Theta(n^3)$ & $\Theta(n^2)$ \\
+  \hline
+\end{tabularx}
+
+\subsection*{Partial Evaluation Algorithm}
+\begin{tabularx}{0.8\textwidth}{
+  | >{\raggedright\arraybackslash}X
+  | >{\centering\arraybackslash}X
+  | >{\raggedright\arraybackslash}X
+  | >{\raggedright\arraybackslash}X | }
+  \hline
+  Case & Time Complexity & Space Complexity \\
+  \hline
+  Best Case & $\Theta(1)$ & $\Theta(1)$ \\
+  \hline
+  Average Case & $\Theta(n)$ & $\Theta(n)$ \\
+  \hline
+  Worst Case & $\Theta(n^2)$ or $\Theta(n^3)$ & $\Theta(n^2)$ or $\Theta(n^3)$ \\
+  \hline
+\end{tabularx}
+
+% SECTION 5 %
+\section{Computational Tools}
+
+% BIBLIOGRAPHY %
+\bibliography{refs}
+\nocite*
+\bibliographystyle{acm}
+\end{document}

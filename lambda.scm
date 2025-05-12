@@ -1,7 +1,8 @@
 ;; Author: Isaac H. Lopez <isaac.lopez@upr.edu>
 ;; Description: Reflective lambda calculus interpreter
 
-(define (l-eval expr env cont)
+;; Main eval function
+(define (l-eval expr env)
   (if (list? expr)
       (cond
        ((single? expr)
@@ -24,34 +25,20 @@
 (define (single? ls)
   (= (length ls) 1))
 
-(define add1
-  (lambda (x) (+ x 1)))
-
+;; Environment functions
 (define the-empty-environment
   (lambda (y)
     (error y "variable not defined")))
 
 (define init-env
   (lambda (y)
-    (cond ((eq? y 'add1) add1)
-	  ((eq? y 'zero) 0)
-	  (else the-empty-environment))))
-
-(define (l-init level turn env)
-  (write level) (write '-) (write turn) (display "> ")
-  (let* ((r (read))
-	 (ans (l-eval r env
-		      (lambda (cont)
-			(l-init level (+ turn 1) env)))))
-    (display ans) (newline)
-    (l-init level (+ turn 1) env)))
-
-(define (l-meta level turn env)
-  (cons-stream (l-init level turn env)
-	       (l-meta (+ 1 level) turn env)))
+    (cond
+     ((eq? y 'zero) 0)
+     (else the-empty-environment))))
 
 (define (start)
-  (let* ((base-l-cont (l-meta 0 0 init-env))
-	 (cont (car base-l-cont))
-	 (mcont (cdr base-l-cont)))
-    ((cont 'start) mcont)))
+  (display "> ")
+  (let ((r (read))
+	(ans (l-eval r init-env)))
+    (newline) (display ans)
+    (start)))
