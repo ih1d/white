@@ -13,7 +13,7 @@
 
 ;; expression accessors
 (define (lambda-id e)
-  (cadr e))
+  (car (cadr e)))
 
 (define (lambda-body e)
   (caddr e))
@@ -26,35 +26,41 @@
 
 ;; Main eval function
 (define (l-eval expr env cont)
-  (cond ((var? expr) (env expr cont))
+  (cond ((number? expr) expr)
+	((var? expr) (env expr cont))
 	((lambda? expr)
 	 (lambda (arg)
-	   (l-eval (lambda-body expr) (lambda (y)
-					(if (eq? (lambda-id expr))
+	   (l-eval (lambda-body expr) (lambda (y mcont)
+					(if (eq? y (lambda-id expr))
 					    arg
-					    (env y)))
+					    (env y mcont)))
 		   cont)))
 	((app? expr)
-	 ((l-eval (app-func expr) env cont) (l-eval (app-arg expr) env cont)))
-	(else
-	 (write expr) (display " is not defined -- EVAL")
-	 (car (force cont)))))
+	 ((l-eval (app-func expr) env cont)
+	  (l-eval (app-arg expr) env cont)))))
 
 ;; Environment functions
-(define the-empty-environment
+(define (add1 x) (+ x 1))
+
+(define (zero? x) (= x 0))
+
+(define the-environment
   (lambda (y cont)
-    (write y) (display " variable not defined") (newline)
-    (let* ((base-cont (force cont))
-	   (call (car base-cont))
-	   (mcont (cdr base-cont)))
-      (call mcont))))
+    (cond ((eq? y 'add1) add1)
+	  ((eq? y 'zero?) zero?)
+	  (else
+	   (write y) (display " variable not defined") (newline)
+	   (let* ((base-cont (force cont))
+		  (call (car base-cont))
+		  (mcont (cdr base-cont)))
+	     (call mcont))))))
 
 ;; setup
 (define (start-interp level turn env cont)
   (write level) (write '-) (write turn) (display "> ")
   (let* ((r (read))
 	 (ans (l-eval r env cont)))
-    (newline) (display ans) (newline)
+    (display ans) (newline)
     (start-interp level (+ turn 1) env cont)))
 
 (define (init-cont level turn env)
@@ -64,7 +70,7 @@
 	       (init-cont (+ level 1) turn env)))
 
 (define (white)
-  (let* ((base (init-cont 0 0 the-empty-environment))
+  (let* ((base (init-cont 0 0 the-environment))
 	 (cont (car base))
 	 (mcont (cdr base)))
     (cont mcont)))
