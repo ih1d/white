@@ -1,0 +1,110 @@
+% Author: Isaac H. Lopez Diaz <isaac.lopez@upr.edu>
+% Description: Presentation for CCOM 6050
+
+\documentclass{beamer}
+
+\usepackage{dirtytalk}
+
+% Document info
+\title{A Reflective language with Dependent Types}
+\author{Isaac H. Lopez Diaz\inst{1}}
+\institute
+{
+\inst{1}
+Department of Computer Science\\
+University of Puerto Rico at Rio Piedras
+}
+
+%% DOC START %%
+\begin{document}
+\maketitle
+
+% FRAME 1 %
+\begin{frame}
+  \frametitle{Overview}
+  \begin{itemize}
+  \item History of Programming Languages
+  \item Reflective Languages
+  \item Motivation
+  \item Live Demo
+  \item Questions
+  \end{itemize}
+\end{frame}
+
+% FRAME 2 %
+\begin{frame}
+  \frametitle{History of PL}
+  \begin{itemize}
+  \item $\lambda$-calculus by Alonzo Church
+  \item Golden Years (1960s-1980s): Assembly, Fortran, Lisp, C
+  \item Modern Era: Python, Java, JavaScript, Rust, OCaml
+  \end{itemize}
+  
+\end{frame}
+
+% FRAME 3 %
+\begin{frame}
+  \frametitle{Type Systems}
+  \begin{itemize}
+  \item Simply Typed $\lambda$-calculus by Alonzo Church
+  \item Static Typing - simple solution to catch type errors at compile time.
+  \item Hindley-Milner - introduced type inference and polymorphism
+  \item Advanced Type Systems - type classes, GADTs, higher-kinded types, OOP, etc.
+  \end{itemize}
+\end{frame}
+
+% FRAME 4 %
+\begin{frame}
+  \frametitle{Dependent Types}
+  \begin{itemize}
+  \item Types depend on terms (values).
+  \item Types are first-class citizens.
+  \item Classic example: Array Length
+  \item Static typing with dynamic properties (not true).
+  \end{itemize}
+  
+\end{frame}
+
+% FRAME 5 %
+\begin{frame}
+  \frametitle{Reflective languages}
+  \say{The evaluator, which determines the meaning of expressions in a programming language, is just another program.} - (SICP) \\   
+  \begin{itemize}
+  \item What is it?
+  \item What does reflective mean?
+  \item Infinite towers
+  \end{itemize}
+\end{frame}
+
+% FRAME 6 %
+\begin{frame}
+  \frametitle{Reflective languages (cont.)}
+  \begin{itemize}
+  \item In late 1990s and early 2000s significant amount of languages appeared.
+  \item Daniel P. Friedman stopped working because: \say{It burned my brain too much.}
+  \end{itemize}
+  
+\end{frame}
+
+% FRAME 7 %
+\begin{frame}
+  \frametitle{Motivation}
+  \begin{itemize}
+  \item Master Thesis/Project
+  \item Allows for precise specifications
+  \item Verified evaluators
+  \item Deep insights on semantics
+  \item Live demo
+  \end{itemize}
+  
+\end{frame}
+
+% REFERENCES
+\begin{frame}[allowframebreaks]
+  \frametitle{References}
+\nocite*
+\bibliographystyle{acm}
+\bibliography{refs}
+\end{frame}
+\end{document}
+%% DOC END %%

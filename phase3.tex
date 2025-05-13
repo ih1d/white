@@ -23,15 +23,23 @@ reflective language is that one can ensure semantics-preserving rewrites (safe t
 % SECTION 2 %
 \section{Background and Methodologies}
 \subsection*{Background}
+
 \subsection*{Methodologies}
 
 % SECTION 3 %
 \section{Algorithms}
+
 \subsection*{Coquand's type-checking algorithm}
+
 \subsection*{Partial Evaluation}
 
 % SECTION 4 %
 \section{Complexity Analysis}
+The following tables show the time and space complexity for each case. \\
+
+The type-checking algorithm would require to traverse each expression and type check it. In the best case there is a simple expression (like a number).
+For more complex expressions, the algorithm would require to recursively call itself on the subexpressions of the expression, which can require multiple
+recursive calls.
 \subsection*{Type-checking Algorithm}
 \begin{tabularx}{0.8\textwidth}{
   | >{\raggedright\arraybackslash}X
