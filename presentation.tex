@@ -3,10 +3,12 @@
 
 \documentclass{beamer}
 
+% Packages
 \usepackage{dirtytalk}
-
+\usepackage{graphicx}
+\usepackage{tabularx}
 % Document info
-\title{A Reflective language with Dependent Types}
+\title{Reflective Languages and Dependent Types}
 \author{Isaac H. Lopez Diaz\inst{1}}
 \institute
 {
@@ -23,26 +25,67 @@ University of Puerto Rico at Rio Piedras
 \begin{frame}
   \frametitle{Overview}
   \begin{itemize}
-  \item History of Programming Languages
+  \item Live demo
   \item Reflective Languages
+  \item Type Systems
   \item Motivation
-  \item Live Demo
   \item Questions
   \end{itemize}
 \end{frame}
 
 % FRAME 2 %
 \begin{frame}
-  \frametitle{History of PL}
-  \begin{itemize}
-  \item $\lambda$-calculus by Alonzo Church
-  \item Golden Years (1960s-1980s): Assembly, Fortran, Lisp, C
-  \item Modern Era: Python, Java, JavaScript, Rust, OCaml
-  \end{itemize}
-  
+  \frametitle{Live Demo}
+  \say{The evaluator, which determines the meaning of expressions in a programming language, is just another program.} - (SICP) \\
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.20]{./sicp1}
+    \label{fig:enter-label}
+  \end{figure}
 \end{frame}
 
 % FRAME 3 %
+\begin{frame}
+  \frametitle{What is a reflective language?}
+  \begin{itemize}
+  \item Defined and created by Brian C. Smith in 1982
+  \item \say{Demystified} by Daniel P. Friedman and Mitchell Wand
+  \item Kenichi Asai's PhD thesis implements the most complete reflective language: Black
+    \item What is it, and why reflective?
+  \end{itemize}
+\end{frame}
+
+% FRAME 4 %
+\begin{frame}
+  \frametitle{The Algorithms}
+  \begin{itemize}
+  \item Meta-circular evaluator
+  \item Futamura Projections (or Partial Evaluation)
+  \item Reflective Towers - an interpreter interpreting and interpreter interpreting an interpreter...
+  \end{itemize}
+\end{frame}
+
+% FRAME 5 %
+\begin{frame}
+  \frametitle{Reflective Towers and their algorithmic behaviour}
+  \centering
+  \begin{tabularx}{0.8\textwidth}{
+    | >{\raggedright\arraybackslash}X
+    | >{\centering\arraybackslash}X
+    | >{\centering\arraybackslash}X |}
+    \hline
+    Depth & Time Complexity & Description \\
+    \hline
+    0 & $\Theta(n)$ & Direct evaluation \\
+    \hline
+    1 & $\Theta(n^2)$ & Interpreted twice \\
+    \hline
+    k & $\Theta(n^{k+1})$ & Interpreted k times (or a k-tower) \\
+    \hline
+  \end{tabularx}  
+\end{frame}
+  
+% FRAME 6 %
 \begin{frame}
   \frametitle{Type Systems}
   \begin{itemize}
@@ -53,7 +96,7 @@ University of Puerto Rico at Rio Piedras
   \end{itemize}
 \end{frame}
 
-% FRAME 4 %
+% FRAME 7 %
 \begin{frame}
   \frametitle{Dependent Types}
   \begin{itemize}
@@ -62,31 +105,44 @@ University of Puerto Rico at Rio Piedras
   \item Classic example: Array Length
   \item Static typing with dynamic properties (not true).
   \end{itemize}
-  
 \end{frame}
 
-% FRAME 5 %
+% FRAME 8 %
 \begin{frame}
-  \frametitle{Reflective languages}
-  \say{The evaluator, which determines the meaning of expressions in a programming language, is just another program.} - (SICP) \\   
+  \frametitle{Algorithms for type-checking dependent types}
   \begin{itemize}
-  \item What is it?
-  \item What does reflective mean?
-  \item Infinite towers
+  \item Biderectional Type Checking
+  \item Normalization by Evaluation
+  \item Thierry Coquand's Algorithm
   \end{itemize}
 \end{frame}
 
-% FRAME 6 %
+% FRAME 9 %
 \begin{frame}
-  \frametitle{Reflective languages (cont.)}
+  \frametitle{Thierry Coquand's Algorithm}
   \begin{itemize}
-  \item In late 1990s and early 2000s significant amount of languages appeared.
-  \item Daniel P. Friedman stopped working because: \say{It burned my brain too much.}
+  \item Syntax-directed
+  \item Conversion checking, i.e. normalize two equal types
   \end{itemize}
-  
+  \centering
+\begin{tabularx}{0.8\textwidth}{
+  | >{\raggedright\arraybackslash}X
+  | >{\centering\arraybackslash}X
+  | >{\raggedright\arraybackslash}X
+  | >{\raggedright\arraybackslash}X | }
+  \hline
+  Case & Time Complexity & Space Complexity \\
+  \hline
+  Best Case & $\Theta(1)$ & $\Theta(1)$ \\
+  \hline
+  Average Case & $\Theta(n)$ & $\Theta(n)$ \\
+  \hline
+  Worst Case & $\Theta(n^2)$ or $\Theta(n^3)$ & $\Theta(n^2)$ \\
+  \hline
+\end{tabularx}  
 \end{frame}
 
-% FRAME 7 %
+% FRAME 10 %
 \begin{frame}
   \frametitle{Motivation}
   \begin{itemize}
@@ -94,9 +150,7 @@ University of Puerto Rico at Rio Piedras
   \item Allows for precise specifications
   \item Verified evaluators
   \item Deep insights on semantics
-  \item Live demo
   \end{itemize}
-  
 \end{frame}
 
 % REFERENCES

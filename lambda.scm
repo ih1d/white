@@ -1,5 +1,6 @@
 ;; Author: Isaac H. Lopez <isaac.lopez@upr.edu>
 ;; Description: Reflective lambda calculus interpreter
+(load "tc.scm")
 
 ;; expression predicates
 (define (var? e)
@@ -40,13 +41,13 @@
 	  (l-eval (app-arg expr) env cont)))))
 
 ;; Environment functions
-(define (add1 x) (+ x 1))
+(define (succ x) (+ x 1))
 
 (define (zero? x) (= x 0))
 
 (define the-environment
   (lambda (y cont)
-    (cond ((eq? y 'add1) add1)
+    (cond ((eq? y 'succ) succ)
 	  ((eq? y 'zero?) zero?)
 	  (else
 	   (write y) (display " variable not defined") (newline)
