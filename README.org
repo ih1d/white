@@ -1,3 +1,2 @@
 #+AUTHOR: Isaac H. Lopez Diaz
-#+TITLE: IMPerative Programming Language
-
+#+TITLE: A Reflective Language
