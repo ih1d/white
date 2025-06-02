@@ -49,7 +49,7 @@
 
 ;; eval
 (define (meta-eval expr env cont)
-  (cond ((constant? expr) (meta-apply expr env cont))
+  (cond ((constant? expr) expr)
 	((var? expr) (lookup expr env))
 	((let? expr) (eval-let expr env))
 	((if? expr) (eval-if expr env))       
@@ -70,8 +70,6 @@
 (define (eval-lambda expr env)
   (lambda (arg) (meta-eval (lambda-body expr) (extend-environment (lambda-id expr) arg env))))
 
-(define (meta-apply expr env cont)
-  (
 ;; environment
 (define the-empty-environment '())
 
@@ -87,5 +85,32 @@
       (cons (cons var val) env)))
 
 ;; setup
-(define (init-meta-cont level env)
-  (
+(define (init-cont env level turn cont)
+  (cont
+   (lambda (answer)
+     (write level) (write '-) (write turn) (display ": ") (write answer)
+     (newline)
+     (write level) (write '-) (write (+ turn 1)) (display "> ")
+     (meta-eval (read) env
+		(lambda (ans)
+		  (init-cont env level (+ turn 1) (cont ans)))))))
+
+(define (run env level answer)
+  (init-cont env level 0
+	      (lambda (cont) (cont answer))))
+
+(define (meta-init level prev-env new-env)
+  (display "New level loaded.") (newline)
+  (lambda (result)
+    (run (list prev-env new-env) level result)))
+
+(define (init-meta-cont level prev-env)
+  (cons-stream (meta-init level prev-env the-empty-environment)
+	       (init-meta-cont (+ level 1) the-empty-environment)))
+
+(define (main)
+  (let* ((base (init-meta-cont 0 the-empty-environment))
+	 (cont (head base))
+	 (meta-cont (tail base)))
+    ((cont 'boot) meta-cont)))
+
