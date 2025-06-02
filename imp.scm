@@ -64,8 +64,8 @@
 	   (meta-eval val env cont)))
 	((let? expr) (eval-let expr env cont))
 	((if? expr) (eval-if expr env cont))       
-	((lambda? expr) (eval-lambda expr env))
-	((app? expr) (meta-apply expr env))))
+	((lambda? expr) ;; no se como hacer (eval-lambda expr env cont))
+	((app? expr) ;; tampoco (eval-apply expr env cont))))
 
 (define (eval-if expr env cont)
   (meta-eval (if-pred expr) env
@@ -85,9 +85,6 @@
   (let* ((new-curr-env (loop (let-var&vals expr) (car env)))
 	 (new-env (cons new-curr-env (cdr env))))
     (meta-eval (let-body expr) new-env cont)))
-
-(define (eval-lambda expr env)
-  (lambda (arg) (meta-eval (lambda-body expr) (extend-environment (lambda-id expr) arg env))))
 
 ;; environment
 (define the-empty-environment '())
