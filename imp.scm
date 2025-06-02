@@ -12,8 +12,11 @@
 (define (let? e)
   (eq? (car e) 'let))
 
+(define (error? e)
+  (eq? e 'error))
+
 (define (var? e)
-  (eq? (car e) 'var))
+  (symbol? e))
 
 (define (lambda? e)
   (eq? (car e) 'lambda))
@@ -47,25 +50,41 @@
 (define (lambda-body e)
   (caddr e))
 
-;; eval
+;; eval (the tricky bit)
 (define (meta-eval expr env cont)
-  (cond ((constant? expr) expr)
-	((var? expr) (lookup expr env))
-	((let? expr) (eval-let expr env))
-	((if? expr) (eval-if expr env))       
+  (cond ((error? expr)
+	 (lambda ()
+	   (lambda (meta-cont)
+	     (let* ((new-cont (head meta-cont))
+		    (new-meta-cont (tail meta-cont)))
+	       ((new-cont) new-meta-cont)))))
+	((constant? expr) (cont expr))
+	((var? expr)
+	 (let ((val (lookup expr (car env))))
+	   (meta-eval val env cont)))
+	((let? expr) (eval-let expr env cont))
+	((if? expr) (eval-if expr env cont))       
 	((lambda? expr) (eval-lambda expr env))
 	((app? expr) (meta-apply expr env))))
 
-(define (eval-if expr env)
-  (if (meta-eval (if-pred expr) env)
-      (meta-eval (if-then expr) env)
-      (meta-eval (if-else expr) env)))
+(define (eval-if expr env cont)
+  (meta-eval (if-pred expr) env
+	     (lambda (ans)
+	       (if ans
+		   (meta-eval (if-then expr) env cont)
+		   (meta-eval (if-else expr) env cont)))))
 
-(define (eval-let expr env)
-  (let ((new-env (map (lambda (pair)
-			(extend-environment (first pair) (second pair) env))
-		      (let-var&vals expr))))
-    (meta-eval (let-body expr) new-env)))
+(define (eval-let expr env cont)
+  (define (loop pairs curr-env)
+    (cond ((null? pairs) curr-env)
+	  (else
+	   (let* ((pair (car pairs))
+		  (var (first pair))
+		  (val (second pair)))
+	     (loop (cdr pairs) (extend-environment var val curr-env))))))
+  (let* ((new-curr-env (loop (let-var&vals expr) (car env)))
+	 (new-env (cons new-curr-env (cdr env))))
+    (meta-eval (let-body expr) new-env cont)))
 
 (define (eval-lambda expr env)
   (lambda (arg) (meta-eval (lambda-body expr) (extend-environment (lambda-id expr) arg env))))
@@ -73,36 +92,32 @@
 ;; environment
 (define the-empty-environment '())
 
+(define (extend-environment var val env)
+  (cons (cons var val) env))
+
 (define (lookup var env)
-  (cond ((null? env) (error var "unbound variable -- LOOKUP"))
+  (cond ((null? env)
+	 (write var) (display " unbound variable.") (newline)
+	 'error)
 	((eq? var (car (car env)))
 	 (cdr (car env)))
 	(else (lookup var (cdr env)))))
 
-(define (extend-environment var val env)
-  (if (null? env)
-      (cons var val)
-      (cons (cons var val) env)))
-
 ;; setup
-(define (init-cont env level turn cont)
-  (cont
-   (lambda (answer)
-     (write level) (write '-) (write turn) (display ": ") (write answer)
-     (newline)
-     (write level) (write '-) (write (+ turn 1)) (display "> ")
-     (meta-eval (read) env
-		(lambda (ans)
-		  (init-cont env level (+ turn 1) (cont ans)))))))
+(define (init-cont env level turn answer)
+  (write level) (write '-) (write turn) (display ": ") (write answer)
+  (newline)
+  (write level) (write '-) (write (+ turn 1)) (display "> ")
+  (meta-eval (read) env
+	     (lambda (ans)
+	       (init-cont env level (+ turn 1) ans))))
 
-(define (run env level answer)
-  (init-cont env level 0
-	      (lambda (cont) (cont answer))))
+(define (run env level)
+  (init-cont env level 0 'boot))
 
 (define (meta-init level prev-env new-env)
-  (display "New level loaded.") (newline)
-  (lambda (result)
-    (run (list prev-env new-env) level result)))
+    (display "New level loaded.") (newline)
+    (run (list prev-env new-env) level))
 
 (define (init-meta-cont level prev-env)
   (cons-stream (meta-init level prev-env the-empty-environment)
@@ -112,5 +127,4 @@
   (let* ((base (init-meta-cont 0 the-empty-environment))
 	 (cont (head base))
 	 (meta-cont (tail base)))
-    ((cont 'boot) meta-cont)))
-
+    ((cont) meta-cont)))
