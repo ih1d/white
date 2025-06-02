@@ -64,8 +64,8 @@
 	   (meta-eval val env cont)))
 	((let? expr) (eval-let expr env cont))
 	((if? expr) (eval-if expr env cont))       
-	((lambda? expr) ;; no se como hacer (eval-lambda expr env cont))
-	((app? expr) ;; tampoco (eval-apply expr env cont))))
+	((lambda? expr) (meta-eval 'error env cont)) ;; no se como hacer (eval-lambda expr env cont))
+	((app? expr) (meta-eval 'error env cont)))) ;; tampoco (eval-apply expr env cont))))
 
 (define (eval-if expr env cont)
   (meta-eval (if-pred expr) env
