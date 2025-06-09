@@ -1,2 +1,2 @@
 #+AUTHOR: Isaac H. Lopez Diaz
-#+TITLE: A Reflective Language
+#+TITLE: A Lazy Reflective Language
