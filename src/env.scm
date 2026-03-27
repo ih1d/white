@@ -1,26 +1,16 @@
 ;; Author: Isaac H. Lopez Diaz
-;; Description: Environment functions and ds
+;; Description: Environment module
+;; Licensed under GNU GPLv3
 
 (define the-empty-environment '())
 
 (define initial-environment
-  (list (cons 'car car)
-	(cons 'cdr cdr)
-	(cons 'cons cons)
-	(cons 'null? null?)
-	(cons '+ +)
+  (list (cons '+ +)
 	(cons '- -)
 	(cons '* *)
-	(cons '/ /)
-	(cons '> >)
-	(cons '< <)
-	(cons '= =)))
+	(cons '/ /)))
 
-(define (lookup op env)
-  (cond ((null? env) '())
-	((eq? op (car (car env)))
-	 (cdr (car env)))
-	(else (lookup op (cdr env)))))
-
-(define (insert proc body env)
-  (cons (cons proc body) env))
+(define (lookup var env)
+  (if (pair? (assq var env))
+      (cdr (assq var env))
+      'nothing))
