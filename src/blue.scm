@@ -28,7 +28,7 @@
 ;; GRAPH ;;
 (define (graph-eval expr env str)
   (cond ((constant? expr) expr)
-	(else (error expr "not defined yet!"0))))
+	(else (error expr "not defined yet!"))))
 
 (define (graph-repl level turn env str)
   (lambda (answer)
