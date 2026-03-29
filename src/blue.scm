@@ -8,46 +8,33 @@
   (or (number? e)
       (boolean? e)))
 
+(define (if? e)
+  (eq? 'if (car e)))
+
 ;; BLUE ;;
 (define (blue-eval expr env str)
   (cond ((constant? expr) expr)
+	((if? expr)
+	 (blue-eval-if expr env str))
 	(else (error expr "not defined yet!"))))
 
+(define (blue-eval-if expr env str)
+  (let* ((cnd (cadr expr))
+	 (thn (caddr expr))
+	 (els (if (null? (cdddr expr))
+		  #f
+		  (cadddr expr))))
+    (if (blue-eval cnd env str)
+	(blue-eval thn env str)
+	(blue-eval els env str))))
 
 (define (blue-repl level turn env str)
   (lambda (answer)
-    (lambda (Mcont)
-      (write level) (write '-) (write turn) (display " :: ") (write answer)
-      (newline)
-      (write level) (write '-) (write (+ turn 1)) (display " BLUE> ")
-      (let ((r (read)))
-	(((blue-repl level (+ turn 1) env str)
-	  (blue-eval r env str))
-	 Mcont)))))
+    (write level) (write '-) (write turn) (display " :: ") (write answer)
+    (newline)
+    (write level) (write '-) (write (+ turn 1)) (display " BLUE> ")
+    ((blue-repl level (+ turn 1) env str)
+     (blue-eval (read) env str))))
 
-;; GRAPH ;;
-(define (graph-eval expr env str)
-  (cond ((constant? expr) expr)
-	(else (error expr "not defined yet!"))))
-
-(define (graph-repl level turn env str)
-  (lambda (answer)
-    (lambda (Mcont)
-      (write level) (write '-) (write turn) (display " :: ") (write answer)
-      (newline)
-      (write level) (write '-) (write (+ turn 1)) (display " GRAPH> ")
-      (let ((r (read)))
-	(((graph-repl level (+ turn 1) env str)
-	  (graph-eval r env str))
-	 Mcont)))))
-
-;; initialization
-(define (init env str)
-  (cons (blue-repl 0 0 env str)
-	(graph-repl 0 0 env str)))
-
-(define (main)
-  (let* ((repls (init '() '()))
-	 (blue (car repls))
-	 (graph (cdr repls)))
-    ((blue 'start) graph)))
+(define (blue)
+  ((blue-repl 0 0 '() '()) 'start))
