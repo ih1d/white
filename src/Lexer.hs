@@ -24,7 +24,7 @@ blueDef =
         }
   where
     ops = ["+", "-", "*", "^", "==", "<", ">", "<=", ">=", "!="]
-    names = ["and", "or", "true", "false", "if", "else", "quote", "eval"]
+    names = ["and", "or", "true", "false", "if", "else", "evalM"]
 
 blueReserved :: String -> Parser ()
 blueReserved = reserved blue

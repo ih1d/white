@@ -1,6 +1,5 @@
 module Parser where
 
-import Control.Monad (void)
 import Data.Functor.Identity (Identity)
 import Lexer
 import Syntax
@@ -33,24 +32,16 @@ operatorTable =
 boolExpr :: Parser Expr
 boolExpr = Const . BoolV <$> ((True <$ blueReserved "true") <|> (False <$ blueReserved "false"))
 
-quoteExpr :: Parser Expr
-quoteExpr = do
-  blueReserved "quote"
-  Quote <$> blueParens expr
-
-evalExpr :: Parser Expr
-evalExpr = do
-  blueReserved "eval"
-  Eval <$> blueParens expr
-
+evalEMExpr :: Parser Expr
+evalEMExpr = blueReserved "evalM" >> EvalM <$> expr
+  
 expr :: Parser Expr
 expr = buildExpressionParser operatorTable term
 
 term :: Parser Expr
 term =
-  quoteExpr
-    <|> evalExpr
-    <|> blueParens expr
+  blueParens expr
+    <|> evalEMExpr
     <|> ifExpr
     <|> boolExpr
     <|> Const . NumV <$> blueInteger
@@ -58,12 +49,12 @@ term =
 
 ifExpr :: Parser Expr
 ifExpr = do
-    blueReserved "if"
-    cond <- expr
-    void blueColon
-    thn <- expr
-    els <- optionMaybe (blueReserved "else" *> blueColon *> expr)
-    return (If cond thn els)
+  blueReserved "if"
+  cond <- expr
+  blueReserved "then"
+  thn <- expr
+  els <- blueReserved "else" *> expr
+  return (If cond thn els)
 
 parseExpr :: String -> Either ParseError Expr
 parseExpr = parse (blueWhiteSpace *> expr <* eof) "<blue>"

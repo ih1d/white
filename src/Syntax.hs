@@ -1,17 +1,17 @@
 module Syntax where
 
+type Ident = String
+
 data Value
     = NumV Integer
     | BoolV Bool
     | StrV String
-    | ExprV Expr
     deriving (Eq)
 instance Show Value where
     show (NumV i) = show i
     show (BoolV True) = "true"
     show (BoolV False) = "false"
     show (StrV str) = str
-    show (ExprV e) = "quoted: " ++ show e
 
 data Op
     = Add
@@ -44,15 +44,11 @@ instance Show Op where
 data Expr
     = Const Value
     | BinOp Op Expr Expr
-    | If Expr Expr (Maybe Expr)
-    | Quote Expr
-    | Eval Expr
+    | If Expr Expr Expr
+    | EvalM Expr
     deriving (Eq)
 instance Show Expr where
     show (Const v) = show v
     show (BinOp op e0 e1) = show e0 ++ " " ++ show op ++ " " ++ show e1
-    show (If cnd thn Nothing) = "if " ++ show cnd ++ ":\n\t" ++ show thn
-    show (If cnd thn (Just els)) =
-        "if " ++ show cnd ++ ":\n\t" ++ show thn ++ "\nelse:\n\t" ++ show els
-    show (Quote e) = "quote(" ++ show e ++ ")"
-    show (Eval e) = "eval(" ++ show e ++ ")"
+    show (If cnd thn els) = "if " ++ show cnd ++ " then " ++ show thn ++ " else " ++ show els
+    show (EvalM e) = "execM " ++ show e

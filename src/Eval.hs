@@ -1,38 +1,35 @@
 module Eval where
 
 import Syntax
+import Language.Haskell.Interpreter ( Interpreter, interpret, as, setImports, loadModules, setTopLevelModules )
 
-eval :: Expr -> Value
-eval (Const v) = v
-eval (BinOp o e0 e1) = 
-    let (v0, v1) = (eval e0, eval e1)
-    in case (o, v0, v1) of
-        (Add, NumV n1, NumV n2) -> NumV (n1 + n2)
-        (Sub, NumV n1, NumV n2) -> NumV (n1 - n2)
-        (Mul, NumV n1, NumV n2) -> NumV (n1 * n2)
-        (Pow, NumV n1, NumV n2) -> NumV (n1 ^ n2)
-        (And, BoolV b1, BoolV b2) -> BoolV (b1 && b2)
-        (Or, BoolV b1, BoolV b2) -> BoolV (b1 || b2)
-        (Eq, v0', v1') -> BoolV (v0' == v1')
-        (Lt, NumV n1, NumV n2) -> BoolV (n1 < n2)
-        (Gt, NumV n1, NumV n2) -> BoolV (n1 > n2)
-        (LtEq, NumV n1, NumV n2) -> BoolV (n1 <= n2)
-        (GtEq, NumV n1, NumV n2) -> BoolV (n1 >= n2)
-        (NotEq, v0', v1') -> BoolV (v0' /= v1')
+baseEval :: Expr -> Interpreter Value
+baseEval (Const v) = pure v
+baseEval (BinOp op e0 e1) = do
+    (v0, v1) <- (,) <$> baseEval e0 <*> baseEval e1
+    case (op, v0, v1) of
+        (Add, NumV a, NumV b)   -> pure $ NumV (a + b)
+        (Sub, NumV a, NumV b)   -> pure $ NumV (a - b)
+        (Mul, NumV a, NumV b)   -> pure $ NumV (a * b)
+        (Pow, NumV a, NumV b)   -> pure $ NumV (a ^ b)
+        (And, BoolV a, BoolV b) -> pure $ BoolV (a && b)
+        (Or, BoolV a, BoolV b)  -> pure $ BoolV (a || b)
+        (Eq, a, b)              -> pure $ BoolV (a == b)
+        (NotEq, a, b)           -> pure $ BoolV (a /= b)
+        (Lt, NumV a, NumV b)    -> pure $ BoolV (a < b)
+        (Gt, NumV a, NumV b)    -> pure $ BoolV (a > b)
+        (LtEq, NumV a, NumV b)  -> pure $ BoolV (a <= b)
+        (GtEq, NumV a, NumV b)  -> pure $ BoolV (a >= b)
+        _                       -> error "type error"
+baseEval (If cnd thn els) = do
+    vc <- baseEval cnd
+    case vc of
+        BoolV True -> baseEval thn
+        BoolV False -> baseEval els
         _ -> error "type error"
-eval (If cnd thn Nothing) = 
-    let vc = eval cnd
-    in case vc of
-        BoolV b -> if b then eval thn else BoolV False
-        _ -> error "type error"
-eval (If cnd thn (Just els)) = 
-    let vc = eval cnd
-    in case vc of
-        BoolV b -> if b then eval thn else eval els
-        _ -> error "type error"
-eval (Quote e) = ExprV e
-eval (Eval e) = 
-    let ve = eval e
-    in case ve of
-        ExprV e' -> eval e'
-        _ -> error "type error"
+baseEval (EvalM e) = do
+    loadModules ["src/Syntax.hs"]
+    setTopLevelModules ["Syntax"]
+    setImports ["Prelude", "Syntax"]
+    v <- interpret (show e) (as :: Expr)
+    baseEval v

@@ -26,6 +26,7 @@ executable blue
     build-depends:    base ^>=4.18.3.0
                     , parsec
                     , mtl
+                    , hint
     other-modules:
         Lexer
         Parser
