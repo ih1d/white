@@ -23,8 +23,8 @@ blueDef =
           caseSensitive = True
         }
   where
-    ops = ["+", "-", "*", "^", "==", "<", ">", "<=", ">=", "!="]
-    names = ["and", "or", "true", "false", "if", "else", "evalM"]
+    ops = ["+", "-", "*", "^", "==", "<", ">", "<=", ">=", "!=", "="]
+    names = ["and", "or", "true", "false", "if", "then", "else", "let", "in", "em"]
 
 blueReserved :: String -> Parser ()
 blueReserved = reserved blue

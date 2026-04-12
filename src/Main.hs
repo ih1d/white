@@ -2,22 +2,22 @@ module Main where
 
 import Parser
 import System.IO (hSetBuffering, stdout, BufferMode(NoBuffering))
-import Eval (baseEval)
-import Language.Haskell.Interpreter (runInterpreter)
+import Eval 
 
 main :: IO ()
 main = do
   putStrLn "Welcome to the reflective language Blue! (v0.1)"
   hSetBuffering stdout NoBuffering
-  repl
+  repl []
 
-repl :: IO ()
-repl = do
+repl :: Env -> IO ()
+repl env = do
   putStr "BLUE> "
   l <- getLine
   case parseExpr l of
-    Left err -> print err >> repl
+    Left err -> print err >> repl env
     Right e -> do
-      v <- runInterpreter (baseEval e)
-      print v
-      repl
+      mres <- run e env
+      case mres of
+        Left err -> print err >> repl env
+        Right (val, env') -> print val >> repl env'

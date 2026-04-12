@@ -32,9 +32,6 @@ operatorTable =
 boolExpr :: Parser Expr
 boolExpr = Const . BoolV <$> ((True <$ blueReserved "true") <|> (False <$ blueReserved "false"))
 
-evalEMExpr :: Parser Expr
-evalEMExpr = blueReserved "evalM" >> EvalM <$> expr
-  
 expr :: Parser Expr
 expr = buildExpressionParser operatorTable term
 
@@ -42,6 +39,8 @@ term :: Parser Expr
 term =
   blueParens expr
     <|> evalEMExpr
+    <|> varExpr
+    <|> letExpr
     <|> ifExpr
     <|> boolExpr
     <|> Const . NumV <$> blueInteger
@@ -55,6 +54,21 @@ ifExpr = do
   thn <- expr
   els <- blueReserved "else" *> expr
   return (If cond thn els)
+
+letExpr :: Parser Expr
+letExpr = do
+  blueReserved "let"
+  v <- blueIdentifier
+  blueReservedOp "="
+  e <- expr
+  blueReserved "in"
+  Let v e <$> expr
+
+varExpr :: Parser Expr
+varExpr = Var <$> blueIdentifier
+
+evalEMExpr :: Parser Expr
+evalEMExpr = EM <$> (blueReserved "em" *> expr)
 
 parseExpr :: String -> Either ParseError Expr
 parseExpr = parse (blueWhiteSpace *> expr <* eof) "<blue>"

@@ -27,6 +27,7 @@ executable blue
                     , parsec
                     , mtl
                     , hint
+                    , exceptions
     other-modules:
         Lexer
         Parser
