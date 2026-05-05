@@ -1,3 +1,3 @@
 # Blue
 
-A Reflective language with dataflow semantics.
+A Reflective language for the analysis of dataflow semantics.
