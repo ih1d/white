@@ -1,25 +1,25 @@
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 module Eval where
 
-import Syntax
-import Control.Monad.State 
-import Language.Haskell.Interpreter
-    ( Interpreter
-    , InterpreterError
-    , runInterpreter
-    , loadModules
-    , setTopLevelModules
-    , setImports
-    , interpret
-    , as
-    )
 import Control.Monad.Catch
+import Control.Monad.State
+import Language.Haskell.Interpreter (
+    Interpreter,
+    InterpreterError,
+    as,
+    interpret,
+    loadModules,
+    runInterpreter,
+    setImports,
+    setTopLevelModules,
+ )
+import Syntax
 
 type Env = [(Ident, Value)]
 
-newtype Eval a = Eval { runEval :: StateT Env Interpreter a }
+newtype Eval a = Eval {runEval :: StateT Env Interpreter a}
     deriving (Functor, Applicative, Monad, MonadState Env, MonadIO, MonadThrow, MonadCatch, MonadMask)
 
 bindVar :: Ident -> Value -> Eval ()
@@ -34,19 +34,19 @@ baseEval (Const v) = pure v
 baseEval (BinOp op e0 e1) = do
     (v0, v1) <- (,) <$> baseEval e0 <*> baseEval e1
     case (op, v0, v1) of
-        (Add, NumV a, NumV b)   -> pure $ NumV (a + b)
-        (Sub, NumV a, NumV b)   -> pure $ NumV (a - b)
-        (Mul, NumV a, NumV b)   -> pure $ NumV (a * b)
-        (Pow, NumV a, NumV b)   -> pure $ NumV (a ^ b)
+        (Add, NumV a, NumV b) -> pure $ NumV (a + b)
+        (Sub, NumV a, NumV b) -> pure $ NumV (a - b)
+        (Mul, NumV a, NumV b) -> pure $ NumV (a * b)
+        (Pow, NumV a, NumV b) -> pure $ NumV (a ^ b)
         (And, BoolV a, BoolV b) -> pure $ BoolV (a && b)
-        (Or, BoolV a, BoolV b)  -> pure $ BoolV (a || b)
-        (Eq, a, b)              -> pure $ BoolV (a == b)
-        (NotEq, a, b)           -> pure $ BoolV (a /= b)
-        (Lt, NumV a, NumV b)    -> pure $ BoolV (a < b)
-        (Gt, NumV a, NumV b)    -> pure $ BoolV (a > b)
-        (LtEq, NumV a, NumV b)  -> pure $ BoolV (a <= b)
-        (GtEq, NumV a, NumV b)  -> pure $ BoolV (a >= b)
-        _                       -> error "type error"
+        (Or, BoolV a, BoolV b) -> pure $ BoolV (a || b)
+        (Eq, a, b) -> pure $ BoolV (a == b)
+        (NotEq, a, b) -> pure $ BoolV (a /= b)
+        (Lt, NumV a, NumV b) -> pure $ BoolV (a < b)
+        (Gt, NumV a, NumV b) -> pure $ BoolV (a > b)
+        (LtEq, NumV a, NumV b) -> pure $ BoolV (a <= b)
+        (GtEq, NumV a, NumV b) -> pure $ BoolV (a >= b)
+        _ -> error "type error"
 baseEval (If cnd thn els) = do
     vc <- baseEval cnd
     case vc of
@@ -65,8 +65,7 @@ baseEval (Var v) = do
 baseEval (EM e) = metaEval e
 
 metaEval :: Expr -> Eval Value
-metaEval e = Eval $ lift $ interpret ("toValue (" ++ show e ++ ")") (as :: Value)
-
+metaEval e = Eval $ lift $ interpret ("toValue (" ++ toHaskell e ++ ")") (as :: Value)
 
 run :: Expr -> Env -> IO (Either InterpreterError (Value, Env))
 run expr env = runInterpreter $ do

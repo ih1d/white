@@ -13,6 +13,24 @@ instance Show Value where
     show (BoolV False) = "false"
     show (StrV str) = str
 
+toHaskell :: Expr -> String
+toHaskell (Const v) = valueToHaskell v
+toHaskell (Var x) = x
+toHaskell (BinOp op e0 e1) = "(" ++ toHaskell e0 ++ " " ++ opToHaskell op ++ " " ++ toHaskell e1 ++ ")"
+toHaskell (If c t e) = "(if " ++ toHaskell c ++ " then " ++ toHaskell t ++ " else " ++ toHaskell e ++ ")"
+
+valueToHaskell :: Value -> String
+valueToHaskell (NumV i) = "(" ++ show i ++ " :: Integer)"
+valueToHaskell (BoolV True) = "True"
+valueToHaskell (BoolV False) = "False"
+valueToHaskell (StrV s) = show s
+
+opToHaskell :: Op -> String
+opToHaskell And = "&&"
+opToHaskell Or = "||"
+opToHaskell NotEq = "/="
+opToHaskell op = show op
+
 class ToValue a where
     toValue :: a -> Value
 
