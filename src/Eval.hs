@@ -69,7 +69,7 @@ metaEval e = Eval $ lift $ interpret ("toValue (" ++ toHaskell e ++ ")") (as :: 
 
 run :: Expr -> Env -> IO (Either InterpreterError (Value, Env))
 run expr env = runInterpreter $ do
-    loadModules ["/Users/isaaclopez/Projects/blue/src/Syntax.hs"]
+    loadModules ["src/Syntax.hs"]
     setTopLevelModules ["Syntax"]
     setImports ["Prelude", "Syntax"]
     runStateT (runEval (baseEval expr)) env
