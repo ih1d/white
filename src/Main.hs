@@ -12,7 +12,7 @@ main = do
 
 repl :: Env -> IO ()
 repl env = do
-  putStr "BLUE> "
+  putStr "WHITE> "
   l <- getLine
   case parseExpr l of
     Left err -> print err >> repl env

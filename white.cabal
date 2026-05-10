@@ -1,8 +1,8 @@
 cabal-version:      3.0
-name:               blue
+name:               white
 version:            0.1.0.0
-synopsis:           A reflective language with dataflow semantics
-homepage:           https://github.com/ih1d/blue
+synopsis:           A reflective language
+homepage:           https://github.com/ih1d/white
 author:             Isaac Hiram Lopez Diaz
 maintainer:         isaac.lopez@upr.edu
 category:           Language
@@ -18,7 +18,7 @@ common warnings
         -Wredundant-constraints
         -Wunused-packages
 
-executable blue
+executable white
     import:           warnings
     main-is:          Main.hs
     build-depends:    base ^>=4.18.3.0
