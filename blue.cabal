@@ -14,8 +14,6 @@ common warnings
         -Wall
         -Wcompat
         -Widentities
-        -Wincoblueete-record-updates
-        -Wincoblueete-uni-patterns
         -Wpartial-fields
         -Wredundant-constraints
         -Wunused-packages
