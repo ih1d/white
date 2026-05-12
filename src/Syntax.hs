@@ -1,83 +1,90 @@
+-- |
+-- Module      :  Syntax
+-- Copyright   :  (c) Isaac Hiram Lopez Diaz 2026
+-- License     :  BSD-3-Clause (see the file LICENSE)
+--
+-- Maintainer  :  isaac.lopez@upr.edu
+-- Stability   :  experimental
+-- Portability :  portable
+--
+-- Abstract syntax for the Blue language.
 module Syntax where
 
-type Ident = String
+import Data.Map.Strict (Map)
+import Data.Set (Set)
+import Data.Text (Text)
 
+-- | The environment
+type Env = Map Var Value
+
+-- | A variable name in Blue
+type Var = Text
+
+-- | Types in Blue
+data Type
+    = IntT
+    | BoolT
+    | StringT
+    | ArrowT Type Effect Type
+    | ProdT Type Type
+    | CodeT Type
+    deriving (Eq, Show)
+
+-- | Effect rows
+data Effect = Pure | Eff (Set EffLabel) deriving (Eq, Show)
+
+data EffLabel
+    = Reflect
+    | IO
+    | Diverge
+    deriving (Eq, Ord, Show)
+
+-- | Values in Blue
 data Value
-    = NumV Integer
+    = IntV Integer
     | BoolV Bool
-    | StrV String
-    deriving (Eq)
-instance Show Value where
-    show (NumV i) = show i
-    show (BoolV True) = "true"
-    show (BoolV False) = "false"
-    show (StrV str) = str
+    | StrV Text
+    | PairV Value Value
+    | ClosureV Var Type Expr Env
+    | CodeV Expr
+    deriving (Eq, Show)
 
-toHaskell :: Expr -> String
-toHaskell (Const v) = valueToHaskell v
-toHaskell (Var x) = x
-toHaskell (BinOp op e0 e1) = "(" ++ toHaskell e0 ++ " " ++ opToHaskell op ++ " " ++ toHaskell e1 ++ ")"
-toHaskell (If c t e) = "(if " ++ toHaskell c ++ " then " ++ toHaskell t ++ " else " ++ toHaskell e ++ ")"
-
-valueToHaskell :: Value -> String
-valueToHaskell (NumV i) = "(" ++ show i ++ " :: Integer)"
-valueToHaskell (BoolV True) = "True"
-valueToHaskell (BoolV False) = "False"
-valueToHaskell (StrV s) = show s
-
-opToHaskell :: Op -> String
-opToHaskell And = "&&"
-opToHaskell Or = "||"
-opToHaskell NotEq = "/="
-opToHaskell op = show op
-
-class ToValue a where
-    toValue :: a -> Value
-
-instance ToValue Integer where toValue = NumV
-instance ToValue String where toValue = StrV
-instance ToValue Bool where toValue = BoolV
-
-data Op
+-- | Binary Operators
+data BinOp
     = Add
     | Sub
     | Mul
     | Pow
-    | And
-    | Or
     | Eq
+    | NotEq
     | Lt
     | Gt
     | LtEq
     | GtEq
-    | NotEq
-    deriving (Eq)
-instance Show Op where
-    show Add = "+"
-    show Sub = "-"
-    show Mul = "*"
-    show Pow = "^"
-    show And = "and"
-    show Or = "or"
-    show Eq = "=="
-    show Lt = "<"
-    show Gt = ">"
-    show LtEq = "<="
-    show GtEq = ">="
-    show NotEq = "!="
+    | And
+    | Or
+    deriving (Eq, Show)
 
+-- | Unary Operators
+data UnOp
+    = Neg
+    | Not
+    deriving (Eq, Show)
+
+-- | Pure Blue expressions. Produce a Value when evaluated
 data Expr
-    = Const Value
-    | BinOp Op Expr Expr
-    | If Expr Expr Expr
-    | Let Ident Expr Expr
-    | Var Ident
-    | EM Expr
-    deriving (Eq)
-instance Show Expr where
-    show (Const v) = show v
-    show (BinOp op e0 e1) = show e0 ++ " " ++ show op ++ " " ++ show e1
-    show (If cnd thn els) = "if " ++ show cnd ++ " then " ++ show thn ++ " else " ++ show els
-    show (Let v e i) = "let " ++ v ++ " = " ++ show e ++ " in " ++ show i
-    show (Var v) = v
-    show (EM e) = "em " ++ show e
+    = ConstE Value
+    | VarE Var
+    | BinE BinOp Expr Expr
+    | UnE UnOp Expr
+    | LamE Var Type Expr -- \(x:τ). e
+    | AppE Expr Expr -- e₁ e₂
+    | PairE Expr Expr -- (e₁, e₂)
+    | FstE Expr -- π₁ e
+    | SndE Expr -- π₂ e
+    | LetE Var Expr Expr -- let x = e in e
+    | IfE Expr Expr Expr -- if e₁ then e₂ else e₃
+    | QuoteE Expr -- <| e |>
+    | AntiE Expr -- ~ e   (only legal inside QuoteE)
+    | EmE Expr -- em e  (reflects Code τ into host; adds Reflect)
+    deriving (Eq, Show)

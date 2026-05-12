@@ -1,0 +1,55 @@
+cabal-version:      3.0
+name:               blue
+version:            0.1.0.0
+homepage:           https://github.com/ih1d/blue
+license:            BSD-3-Clause
+license-file:       LICENSE
+author:             Isaac Hiram Lopez Diaz
+maintainer:         isaac.lopez@upr.edu
+category:           Language
+build-type:         Simple
+extra-doc-files:    README.md
+
+common warnings
+    ghc-options: 
+        -Wall
+        -Wcompat
+        -Widentities
+        -Wincomplete-record-updates
+        -Wincomplete-uni-patterns
+        -Wpartial-fields
+        -Wredundant-constraints
+        -Wunused-packages
+
+common language
+    default-language: GHC2021
+    default-extensions:
+        DerivingStrategies
+        GeneralizedNewtypeDeriving
+        LambdaCase
+        OverloadedStrings
+        TypeFamilies
+
+library
+    import:           warnings
+                    , language
+    hs-source-dirs:   src
+    build-depends:    base ^>=4.18.3.0
+                    , containers
+                    , megaparsec
+                    , parser-combinators
+                    , text
+    exposed-modules:
+        Syntax
+        Lexer
+        Parser
+
+executable blue
+    import:           warnings
+                    , language
+    main-is:          Main.hs
+    build-depends:    base ^>=4.18.3.0
+                    , blue
+                    , megaparsec
+                    , text
+    hs-source-dirs:   app
